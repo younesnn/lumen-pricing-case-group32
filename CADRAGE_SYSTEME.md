@@ -1,5 +1,7 @@
 # LUMEN — Cadrage du système
 
+Référence commune : la version de ce fichier sur la branche `main`. Avant de commencer une tâche, récupérer les derniers changements de `main` et lire ce document. Les versions sur les branches de travail sont des propositions tant que leur Pull Request n’est pas fusionnée.
+
 Statut : besoin et mission retenus avec l’utilisateur. Exigences fonctionnelles affinées à partir de l’audit des douze datasets du 11 septembre 2026, proposées pour revue ; hypothèses de transfert et seuils métier à arbitrer. Aucun site ni modèle ML implémenté dans cette étape.
 
 ## Besoin de référence
