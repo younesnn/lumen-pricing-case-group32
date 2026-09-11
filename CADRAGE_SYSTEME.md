@@ -1,6 +1,6 @@
 # LUMEN — Cadrage du système
 
-Statut : besoin et mission retenus avec l’utilisateur. Exigences fonctionnelles affinées à partir de l’audit des douze datasets du 11 septembre 2026, proposées pour revue ; hypothèses de transfert et seuils métier à arbitrer. Aucun site ni modèle ML implémenté dans cette étape.
+Statut : besoin et mission retenus avec l’utilisateur. Modèle décisionnel MD-01 à MD-08 proposé et F04 affiné ; exigences fonctionnelles fondées sur l’audit des douze datasets du 11 septembre 2026, proposées pour revue ; hypothèses de transfert et seuils métier à arbitrer. Aucun site ni modèle ML implémenté dans cette étape.
 
 ## Besoin de référence
 
@@ -72,6 +72,125 @@ Le scénario commun conserve aussi le mode de calcul commercial, les éventuels 
 Le scénario commun contient : identifiant et version, nom, cible et positionnement argumenté, périmètre géographique, prix et format de vente par canal, canaux et mix, date de lancement, horizon et pas temporel, budget et allocation marketing, hypothèses de portée, adoption, conversion et réachat si utilisé, coûts et déductions, références des données et règles de calcul. Chaque paramètre indique sa valeur, son unité, sa provenance, son statut (observé, hypothèse ou dérivé) et son domaine de validité. Une valeur non disponible reste explicitement manquante ; elle ne devient pas zéro.
 
 Les paramètres de stratégie et les hypothèses doivent pouvoir être modifiés dans le Simulator. Les données sources restent consultables ; une substitution utilisateur devient une hypothèse distincte et traçable. Les paramètres dérivés affichent leur règle de calcul. Tout résultat porte l’identifiant de sa version de scénario, des données et des règles utilisées. Les états requis sont : brouillon, invalide/incomplet, prêt à évaluer, en cours, évalué, obsolète après modification et échec explicite. Seuls les résultats compatibles et à jour peuvent soutenir une comparaison ou une recommandation.
+
+## Modèle décisionnel — contrat de calcul proposé
+
+Cette section formalise F03 → F04/F05 → F06/F07 → F08 à partir de l’[analyse du 11 septembre 2026](analysis/ANALYSE_DATASETS_LUMEN.md), sections 2 à 5. Elle spécifie des calculs futurs ; aucune estimation allemande, interface ou méthode ML n’est implémentée ici. Les résultats restent conditionnels tant que leurs entrées déterminantes ne sont pas renseignées.
+
+### MD-01 — Provenance, unités et entrées communes
+
+Chaque relation conserve séparément la nature de ses entrées et celle de sa règle : **DATA** = quantité observée/estimée descriptivement depuis les fichiers (avec population et caractère synthétique) ; **MODEL** = règle de calcul déterministe, statistique ou éventuellement ML, sans implication de validation ; **ASSUMPTION** = hypothèse ou choix stratégique modifiable ; **EXTERNAL** = donnée allemande externe requise, encore à obtenir ou à confirmer. Une donnée externe manquante peut être remplacée par une hypothèse explicitement acceptée, jamais par une valeur silencieuse. Une estimation présente dans un CSV reste une estimation, pas une observation comportementale. Un résultat MODEL hérite des limites de toutes ses entrées.
+
+Le registre conserve pour chaque entrée : valeur ou manque, unité, pays, période, fichier/champ ou justification, classe, domaine, plage de sensibilité, responsable de validation et version. Les substitutions deviennent ASSUMPTION. Les formules arithmétiques ci-dessous sont MODEL ; les coefficients empiriques descriptifs restent DATA et leur transfert à DE devient ASSUMPTION.
+
+Notation commune : scénario `s`, canal de vente `c`, canal marketing `k`, période `t`, période d’acquisition `τ`, âge de cohorte `j=t−τ`. Proposition de travail **ASSUMPTION à valider** : pas mensuel et horizon de 12 mois depuis le lancement, mêmes conventions pour toutes les options ; les décalages de dates conservent cette durée. Volumes en canettes de 330 ml, prix en €/canette, budget et résultats en €, CAC en €/client. Les trois canaux de vente et les quatre canaux marketing restent deux dimensions distinctes.
+
+Entrées de stratégie **ASSUMPTION** : prix par canal `P[c,t]`, cible/positionnement, territoire accessible, date, canaux disponibles, budgets `B[k,t]`, coûts fixes `F[t]`, investissement initial `I0`, contraintes et priorités humaines. Prix, budgets, coûts et volumes sont non négatifs ; CAC utilisé strictement positif ; proportions dans [0,1], poids et allocations normalisés. Une marge peut être négative. Un canal fermé reçoit zéro volume, sans redistribution implicite. Les éventuelles limites de capacité requièrent **EXTERNAL** (stocks/distribution DE) ou une **ASSUMPTION** visible ; sans elles, on estime la demande conditionnelle, pas des ventes garanties.
+
+### MD-02 — Carte des dépendances vers KPI et décisions
+
+| Relation importante | Entrées et source | Calcul / nature de la relation | KPI puis décision soutenue | Limite actuelle |
+|---|---|---|---|---|
+| Prix → demande | DATA : trois acceptations estimées, seuils d’enquête ; ASSUMPTION : prix et réponse d’achat | MODEL : facteur `g(P)` explicité en MD-03 ; ASSUMPTION : passage acceptation → achat | Volume, contribution → arbitrage prix | Élasticité causale non estimable ; aucun effet propre au canal identifié |
+| Canal → volume et revenu | DATA : mix historiques, préférences DE et déductions ; ASSUMPTION : mix, accès et allocation ; EXTERNAL : accords DE | MODEL : allocation des unités puis revenu net MD-05 | Volume/contribution par canal → canaux de lancement | Préférence déclarée ≠ part de ventes ; aucune jointure marketing–vente observée |
+| Saison/date → profil de demande | DATA : indice mensuel ; ASSUMPTION : transfert, montée en charge | MODEL : facteur saisonnier normalisé MD-03 | Résultats à horizon égal → période candidate | Douze mois sans année ; pas d’effet météo indépendant |
+| Marketing → clients → unités | DATA : CAC attribué ; ASSUMPTION : CAC DE, déduplication, incrémentalité, cohortes ; EXTERNAL : pilote DE | MODEL conditionnel : MD-04 | Unités additionnelles supposées, coût, ROI conditionnel → budget | Réponse marginale, saturation, réachat et causalité non identifiés |
+| NL/DK/SE → Allemagne | DATA : profils analogues ; ASSUMPTION : poids, niveau DE, portée ; EXTERNAL : exposition/distribution comparable | MODEL conditionnel : MD-03 | Plage de demande → dimensionnement du lancement | Aucun meilleur analogue global ni précision DE validés |
+| Demande → CA → marge | ASSUMPTION : unités simulées ; DATA : coûts/déductions illustratifs ; EXTERNAL : conventions DE | MODEL arithmétique : MD-05 | CA consommateur, revenu net, contribution et résultat → viabilité | Fiscalité, frais et périmètre comptable à confirmer |
+| Marketing → ROI | ASSUMPTION : contrefactuel et flux ; EXTERNAL : incrémentalité mesurée | MODEL : différence de contribution / dépense MD-06 | ROI conditionnel → comparer dépenses additionnelles | ROI causal non estimable sur les données actuelles |
+| Flux → payback / break-even | ASSUMPTION : calendrier et coûts ; EXTERNAL : encaissements/paiements DE | MODEL : cumul et seuil MD-06 | Délai de couverture, seuil en unités → contrainte de retour | LTV/CAC ne fournit aucun délai ; trésorerie non calculable sans échéancier |
+| Incertitudes → robustesse | DATA : anomalies/domaines ; ASSUMPTION : plages conjointes | MODEL : sensibilités MD-07 | Bascule du classement, pertes conditionnelles → réduire l’exposition | Scénarios ≠ probabilités ni intervalles de confiance |
+| KPI + premium + priorités → recommandation | DATA : preuves de positionnement ; ASSUMPTION : contraintes/priorités ; MODEL : comparaison | MD-07 : faisabilité, dominance, compromis, décision humaine | Prix/canaux/date/budget proposés avec alternative | Pas d’optimum global ni score premium fabriqué |
+
+### MD-03 — Mode A : demande totale conditionnelle et transfert
+
+Ce mode compare des hypothèses de **demande totale**, déjà susceptibles d’inclure du marketing. Il n’ajoute jamais le mode B à une base totale non décomposée.
+
+`Q_A[c,t] = L_DE × μ[c] × r[c,t] × S[t] × g_c(P[c,t])`
+
+- `L_DE` : niveau mensuel total à maturité, à prix de référence et saison neutre, en canettes/mois (**ASSUMPTION**, non estimable sans échelle/portée DE). `μ[c]` : mix en unités, somme 1 (**ASSUMPTION**). `r[c,t]` : montée en charge et ouverture du canal, entre 0 et 1 (**ASSUMPTION**). Chacun de ces paramètres doit éviter de représenter deux fois la même restriction de portée.
+- Les niveaux et mix NL/DK/SE sont **DATA** ; ils documentent des variantes de `L_DE` et `μ`, sans devenir une base organique allemande. Si un profil analogue est retenu, `H[c,t]=Σ_a w[a,c] h[a,c,t]`, avec profils `h` normalisés à moyenne 1 sur une fenêtre commune (**DATA/MODEL**, convention de retrait de tendance et normalisation conservée), poids non négatifs de somme 1 (**ASSUMPTION**). `H` remplace `S` ; il ne le multiplie pas si la saison est déjà incluse. La croissance historique de 33–35 % n’est pas transférée automatiquement. L’échelle DE reste nécessaire même avec un profil connu.
+- `S[m] = I[m] / ((Σ_m d[m] I[m])/(Σ_m d[m]))` (**MODEL**, `I` DATA, `d` convention ASSUMPTION). Pour des mois traités comme périodes égales, `d=1` et le dénominateur vaut 101,6667. Pour une base journalière, `d` représente les jours d’une année de référence complète et la base doit être multipliée par le nombre de jours de chaque période. Conserver la même normalisation annuelle pour toutes les dates, sans renormaliser l’horizon de lancement. Aucun second multiplicateur météo.
+- `g_c(P_ref)=1`. Sans fonction de réponse acceptée, seuls les volumes au prix de référence renseigné sont calculables ; une comparaison à volumes fixes reste possible, étiquetée **ASSUMPTION de volume constant**, sans prétention prédictive. Variante exploratoire : `g(P)=a(P)/a(P_ref)` avec `a` égal aux acceptations 0,617 / 0,517 / 0,267 aux trois prix (**DATA estimée**). Appliquer ce ratio à des achats réels est une **ASSUMPTION forte**, commune aux canaux faute de preuve différentielle. Interpolation uniquement si règle acceptée ; extrapolation hors des trois points non disponible par défaut. Ne pas réappliquer `a` à une conversion qui intègre déjà le prix.
+
+Une variation de budget en mode A modifie les coûts, mais ne modifie pas automatiquement les volumes : le lien commercial marketing n’est pas identifié. La demande n’est égale aux ventes que sous **ASSUMPTION** de disponibilité et satisfaction complète ; sinon afficher la limite, ou `ventes=min(demande, capacité)` si une capacité compatible est renseignée (**MODEL**, sans report implicite des ventes perdues).
+
+### MD-04 — Mode B : base organique + cohortes incrémentales supposées
+
+Ce mode est préférable pour explorer explicitement une hypothèse marketing. La base `Q0[c,t]` représente les unités du scénario de référence **sans les dépenses additionnelles étudiées**, au même prix et périmètre ; elle est **ASSUMPTION** jusqu’à mesure **EXTERNAL**. Elle n’est pas récupérable par simple copie des ventes analogues.
+
+`CAC_hist[k] = Σ_t spend[k,t] / Σ_t acquired[k,t]` (**DATA**, estimation descriptive ; non calculable si acquisitions nulles).
+
+`A[k,τ] = B[k,τ] / CAC_DE[k,τ]`
+
+`N[k,τ] = A[k,τ] × δ[k,τ] × ι[k,τ]`
+
+`ΔQ[c,t] = Σ_k Σ_{τ≤t} N[k,τ] × α[k,c,τ] × u[k,c,t−τ]`
+
+`Q_B[c,t] = Q0[c,t] + ΔQ[c,t]`
+
+Les quatre équations sont **MODEL conditionnel**. `A` compte des clients attribués ; `δ` est la fraction conservée après déduplication selon une règle d’attribution cohérente entre canaux/cohortes ; `ι` est la fraction incrémentale parmi ces clients. `CAC_DE`, `δ`, `ι`, allocation `α` (somme sur canaux de vente = 1) et profil `u` en canettes/client/période sont **ASSUMPTION**. `u` inclut premier panier, réachat et délai, sans seconde conversion client → acheteur ; si réachat absent, le renseigner explicitement nul, pas le présumer. Les cohortes doivent respecter l’horizon, sans affecter dès l’acquisition leurs achats futurs aux premières périodes.
+
+Le CAC historique global 44,01 € est un repère **DATA**, pas la valeur DE par défaut. La linéarité budget/CAC n’est admise que dans une plage budgétaire acceptée ; hors plage, volume non estimable sans nouvelle hypothèse. Le referral nécessite une population éligible explicite et ne s’active pas automatiquement au démarrage. Budget nul donne zéro acquisition sans exiger un CAC fictif. Les paramètres DE devront être informés par un pilote avec commandes et cohortes (**EXTERNAL**).
+
+Prix, saison et montée en charge doivent être affectés une seule fois aux paramètres `Q0`, `CAC_DE`, `α` ou `u`, avec dépendance déclarée ; aucun multiplicateur global supplémentaire par défaut. Si ces dépendances manquent, pas d’effet chiffré automatique sur les volumes. Cette chaîne n’identifie ni halo organique, ni cannibalisation négative, ni effets concurrentiels : elle suppose leur absence ou exige un modèle explicite avant de les simuler. Un ROI issu de cette chaîne demeure hypothétique même si l’arithmétique est exacte.
+
+### MD-05 — Prix, chiffre d’affaires et marge
+
+Pour des unités vendues `Q[c,t]`, après choix du mode et de la convention de disponibilité :
+
+`CA_consommateur[t] = Σ_c P[c,t] × Q[c,t]`
+
+`n[c,t] = P[c,t] × (1 − retailer[c] − distributor[c] − payment[c]) − fulfillment[c]`
+
+`m[c,t] = n[c,t] − COGS[c,t]`
+
+`R_net[t] = Σ_c n[c,t] × Q[c,t]` ; `C[t] = Σ_c m[c,t] × Q[c,t]`
+
+`Résultat_périmètre[t] = C[t] − Σ_k B[k,t] − F[t]`
+
+Ces identités sont **MODEL** ; coefficients et COGS de 0,62 €/canette sont **DATA illustratives** issues de `channel_economics.csv` et `cost_breakdown.csv`. Les pourcentages sont appliqués au même prix de référence selon ces fichiers, pas successivement. Les cinq composants donnent le COGS total ; ne pas ajouter une deuxième fois le total ou le KPI 30 %. Exemple DTC à 2,19 € : `n=2,19×0,971−0,35=1,77649`, `m=1,15649` €/canette. Retail : `n=2,19×(1−0,35−0,08)=1,2483`, `m=0,6283`.
+
+La formule reproduit la convention économique du cas ; `R_net` est un revenu après déductions commerciales et fulfillment, pas un CA comptable certifié. TVA, consigne, retours, frais contractuels allemands et possible recouvrement des postes logistiques exigent **EXTERNAL** ou conventions **ASSUMPTION**. Ne pas appliquer de taux fiscal inventé ni soustraire à nouveau le fulfillment. `revenue_eur` historique conserve son libellé propre, sans assimilation à `R_net`. Le total du brief non réconcilié ne calibre pas `Q`.
+
+Le taux de contribution est `Σ_t C[t] / Σ_t R_net[t]` si le dénominateur est strictement positif (**MODEL**, base visible) ; la contribution en euros reste prioritaire. Ce n’est ni une marge nette complète ni le KPI historique 30 %. Coûts fixes manquants ⇒ résultat du périmètre non calculable, tout en conservant marge unitaire et contribution disponibles. `I0` est traité séparément dans les cumuls, sans double imputation dans `F`.
+
+### MD-06 — Retour marketing, payback et break-even
+
+Trois questions sont séparées : couverture des dépenses, retour incrémental et rentabilité du périmètre. Toutes les règles sont **MODEL**, les flux simulés **ASSUMPTION** et les calendriers réels DE **EXTERNAL** lorsqu’ils manquent.
+
+1. **Couverture marketing** : `G[T]=Σ_{t≤T}(C[t]−B[t])`, où `B[t]=Σ_k B[k,t]`. Le premier franchissement de zéro après solde négatif donne un délai de couverture par la contribution totale, sans preuve d’incrémentalité. Les dépenses pré-lancement sont datées en `t=0`.
+2. **ROI marketing incrémental conditionnel** : choisir explicitement scénario `s` et contrefactuel `b` (même horizon, conventions et autres leviers fixes pour isoler le marketing). `ΔC=Σ_t(C_s[t]−C_b[t])`, `ΔB=Σ_t(B_s[t]−B_b[t])`, puis `ROI_inc=(ΔC−ΔB)/ΔB` pour `ΔB>0`. Si prix/canaux changent aussi, nommer le résultat « retour du changement de stratégie », sans attribution exclusive au marketing. Coûts fixes additionnels exclus de ce ROI sont affichés ; leur inclusion requiert un KPI distinct défini. Sans contrefactuel : non calculable ; `ΔB=0` : sans objet ; `ΔB<0` : présenter les différences sans ce ratio. Aucun ROI causal mesuré n’est disponible.
+3. **Récupération du lancement** : `K[T]=−I0+Σ_{t≤T}(C[t]−B[t]−F[t])`. Premier franchissement après négativité, avec signalement d’une rechute ultérieure ; sinon « non atteint sur l’horizon ». Des flux dès le départ non négatifs donnent « couvert dès le départ » ; aucun investissement/dépense à récupérer donne « sans objet ». Un calendrier manquant donne « non calculable ». Ce cumul économique devient un payback de trésorerie uniquement avec encaissements, délais de paiement, stock et investissements datés sur une base cash cohérente.
+4. **Break-even en unités** : à prix/mix/coût constants sur l’horizon, `m_mix=Σ_c μ[c]m[c]` et `Q_BE=(I0+Σ_t(B[t]+F[t]))/m_mix` si `m_mix>0`. C’est le seuil de couverture du périmètre, pas une prévision de demande ni une date. Si marketing dépend du volume, l’équation doit intégrer cette dépendance ; la formule simple ne s’applique plus. Avec coûts positifs et `m_mix≤0`, aucun seuil fini. Avec paramètres variables, utiliser les cumuls, pas une marge moyenne non justifiée.
+
+Le délai incrémental utilise de même le cumul `Σ_{t≤T}(ΔC[t]−ΔB[t])`, jamais le cumul total du scénario. Un ratio LTV/CAC ne donne aucun délai sans profil de contribution de cohorte et horizon compatibles.
+
+### MD-07 — Incertitude, comparaison et recommandation
+
+**DATA** fournit les limites et anomalies ; **ASSUMPTION** fixe les plages et priorités ; **MODEL** recalcule les scénarios. Tester séparément puis conjointement : niveau DE, poids analogues, mix/accès, réponse prix, CAC, incrémentalité/déduplication, panier/réachat, montée en charge, coûts et calendrier. Les variantes conjointes doivent rester cohérentes (allocations normalisées, budgets et capacités compatibles). Le pic historique et la convention saisonnière font l’objet de sensibilités si la chaîne les utilise.
+
+Restituer prudent/central/favorable, perte éventuelle, délai non atteint et valeurs de bascule entre stratégies, avec paramètres exacts. Ces bornes n’ont ni probabilité ni niveau de confiance. Probabilité de perte, VaR ou intervalle prédictif DE restent non calculables sans distributions/dépendances justifiées et validation. Distinguer incertitude de mesure, de modèle, de transfert et de choix humain ; l’accord entre modèles ne prouve pas la validité DE.
+
+La recommandation suit : (1) vérifier contraintes de budget/accès et métriques comparables ; (2) écarter les scénarios dominés sur les critères numériques complets retenus ; (3) présenter les compromis restants avec preuves qualitatives du premium ; (4) tester la stabilité du choix ; (5) proposer prix, canaux, date et budget avec alternative, sacrifices et conditions de validité. Les contraintes et priorités sont **ASSUMPTION métier** à approuver ; un score agrégé n’est pas requis. Si utilisé, critères, normalisation et poids doivent être définis avant classement. Un KPI manquant ne vaut pas zéro. Sans priorité ou données déterminantes, restituer plusieurs options et la collecte nécessaire, sans vainqueur artificiel. Le choix final reste humain (F08.02).
+
+### MD-08 — Recette du contrat et arbitrages avant prototype
+
+Recettes documentaires indépendantes, à transcrire ultérieurement en vérifications du moteur :
+
+| Cas hypothétique | Résultat attendu |
+|---|---|
+| Budget 1 000 €, CAC 50 €, δ=1, ι=0,5, 6 unités par client dans la période, allocation 60/40 | 20 clients attribués, 10 incrémentaux supposés, 60 unités dont 36/24 ; aucune seconde conversion |
+| 100 unités DTC à 2,19 €, COGS 0,62 € | CA consommateur 219 €, revenu net conventionnel 177,649 €, contribution 115,649 € ; arrondi final au centime |
+| Référence et variante : contributions 100/180 €, budgets 0/50 € | ΔC=80 €, ΔB=50 €, ROI conditionnel 60 %, distinct de la couverture totale 130 € |
+| Investissement 100 € puis flux nets 60/60 € | K : −100, −40, +20 ; récupération période 2 |
+| Coûts à couvrir 120 €, marge constante 0,60 €/unité | Seuil 200 unités ; aucun délai déduit |
+| CAC requis manquant, réponse prix absente, contrefactuel absent | Blocage des seuls volumes/effets prix/ROI dépendants ; marge unitaire disponible |
+| Mode A total et acquisitions du mode B sélectionnés simultanément | Refus du cumul tant que la base n’est pas décomposée |
+
+Avant prototype, faire arbitrer horizon/pas, convention économique DE et coûts inclus, mode A ou B, niveau accessible/base organique, réponse prix, allocation marketing–vente, cohortes et plages plausibles. Fixer aussi contraintes budgétaires, définition de retour privilégiée, contrefactuel et priorités premium/finance. Ces arbitrages n’exigent pas de prolonger indéfiniment le cadrage : une première version peut fonctionner sur hypothèses acceptées et résultats partiels.
+
+Ensuite seulement, préparer un POC de prévision des marchés historiques : baseline naïve, méthode statistique, puis ML si utile, avec validation temporelle et mesures d’erreur par horizon/canal ; validation sur pays tenu à l’écart en complément. Ne pas revendiquer une baseline annuelle validée sur plusieurs cycles avec seulement 78 semaines. Ce POC ne remplacera ni l’échelle allemande ni un pilote d’incrémentalité. Aucun entraînement n’est autorisé dans la présente étape.
 
 ## Exigences détaillées par fonction
 
@@ -197,15 +316,17 @@ Traçabilité : FP-01 → FS-03 ; contraintes CT-03, CT-05, CT-06, CT-07, CT-08,
 - **Composant / interaction UI :** Liste des scénarios, actions enregistrer, dupliquer et consulter une version.
 - **Critère de validation / acceptation :** Modifier B dupliqué de A ne change pas A ; rouvrir A restitue paramètres, mode commercial, exclusions et références exacts. Une mise à jour des données crée une nouvelle évaluation et conserve le résultat antérieur identifiable.
 
-### F04 — Estimer le potentiel commercial
+### F04 — Estimer la demande et les ventes conditionnelles
 
 Traçabilité : FP-01 → FS-04 ; contraintes CT-01, CT-02, CT-05, CT-07, CT-08, CT-09.
+
+Contrat applicable : MD-01 à MD-04 pour les entrées, provenances et deux modes de volume ; MD-05 pour les agrégations ; MD-07/MD-08 pour les limites et recettes. Chaque résultat F04 conserve les classes DATA/MODEL/ASSUMPTION/EXTERNAL de sa chaîne et la liste des entrées manquantes. Les modes A et B sont exclusifs tant que la base totale n’est pas décomposée. Demande et ventes ne sont assimilées que sous hypothèse explicite de disponibilité.
 
 #### F04.01 — Expliciter le passage vers des ventes allemandes
 
 - **Objectif :** Rendre inspectable le raisonnement d’estimation.
 - **Entrées :** Scénario valide, historiques NL/DK/SE, contexte allemand, enquêtes et funnel marketing.
-- **Traitement attendu :** Choisir et documenter une chaîne de calcul allemande. Soit une base de demande transférée depuis les analogues avec facteur d’échelle/portée explicitement hypothétique, soit une chaîne d’acquisition budget/CAC DE, incrémentalité, allocation de vente et unités par client/cohorte. Dans le second cas, renseigner la déduplication intercanaux, ou déclarer une hypothèse explicite d’absence de chevauchement ; prévoir disponibilité et montée en charge du referral. Séparer demande organique et demande incrémentale. Ne pas ajouter des acquisitions à une base analogue qui les inclut déjà sans décomposition. Pour faire varier les volumes avec le prix, exiger une réponse prix hypothétique documentée : aucune élasticité causale n’est identifiée par les fichiers. L’interpolation des acceptations déclarées reste une hypothèse distincte de conversion réelle.
+- **Traitement attendu :** Choisir le mode A (MD-03) ou B (MD-04), conserver ses équations et documenter une chaîne de calcul allemande. Soit une base de demande transférée depuis les analogues avec facteur d’échelle/portée explicitement hypothétique, soit une chaîne d’acquisition budget/CAC DE, incrémentalité, allocation de vente et unités par client/cohorte. Dans le second cas, renseigner la déduplication intercanaux, ou déclarer une hypothèse explicite d’absence de chevauchement ; prévoir disponibilité et montée en charge du referral. Séparer demande organique et demande incrémentale. Ne pas ajouter des acquisitions à une base analogue qui les inclut déjà sans décomposition. Pour faire varier les volumes avec le prix, exiger une réponse prix hypothétique documentée : aucune élasticité causale n’est identifiée par les fichiers. L’interpolation des acceptations déclarées reste une hypothèse distincte de conversion réelle.
 - **Sorties :** Chaîne de calcul modifiable, populations et unités traçables, volumes conditionnels ou résultats dépendants non calculables ; diagnostic des paramètres manquants.
 - **Composant / interaction UI :** Panneau « Hypothèses commerciales » modifiable et détail de la chaîne de calcul.
 - **Critère de validation / acceptation :** Sans portée/échelle nécessaire ou sans unités par client, aucun volume certain n’apparaît. Budget/CAC produit des clients attribués avant toute conversion en unités. Une recette hypothétique de 1 000 € / 50 € donne 20 clients attribués ; avec incrémentalité 0,5, absence de chevauchement et 6 unités/client, elle donne 60 unités incrémentales avant allocation et calendrier. L’interface identifie ces valeurs comme hypothèses de recette, pas estimations DE. Une réponse prix absente n’empêche pas la marge unitaire mais empêche de prétendre prévoir la variation de demande.
@@ -214,7 +335,7 @@ Traçabilité : FP-01 → FS-04 ; contraintes CT-01, CT-02, CT-05, CT-07, CT-08,
 
 - **Objectif :** Comprendre l’effet commercial de la stratégie.
 - **Entrées :** Scénario, hypothèses validées et calendrier F06.
-- **Traitement attendu :** Combiner les composantes de demande définies en F04.01 sans double comptage, allouer par canal et période puis appliquer prix et format compatibles. Afficher calendrier de cohorte, panier et réachat lorsqu’ils sont utilisés ; conserver les décimales intermédiaires et une règle d’arrondi de restitution. Distinguer chiffre d’affaires consommateur, revenu net LUMEN et revenu enregistré dans l’export historique.
+- **Traitement attendu :** Appliquer MD-03 ou MD-04, puis MD-05 ; distinguer demande et ventes disponibles. Combiner les composantes de demande définies en F04.01 sans double comptage, allouer par canal et période puis appliquer prix et format compatibles. Afficher calendrier de cohorte, panier et réachat lorsqu’ils sont utilisés ; conserver les décimales intermédiaires et une règle d’arrondi de restitution. Distinguer chiffre d’affaires consommateur, revenu net LUMEN et revenu enregistré dans l’export historique.
 - **Sorties :** Séries de volumes et chiffre d’affaires estimés, détail et totaux.
 - **Composant / interaction UI :** Courbes temporelles, répartition par canal, indicateurs et tableau des valeurs dans le Simulator.
 - **Critère de validation / acceptation :** La recette de F04.01 allouée à 60 %/40 % donne 36/24 unités et conserve 60 au total. Les sommes périodes/canaux se réconcilient avant arrondi. Le CA égale unités × prix compatible ; le revenu historique n’est pas relabellisé net LUMEN sans convention validée.
@@ -223,7 +344,7 @@ Traçabilité : FP-01 → FS-04 ; contraintes CT-01, CT-02, CT-05, CT-07, CT-08,
 
 - **Objectif :** Éviter une lecture trop certaine des estimations.
 - **Entrées :** Hypothèses centrales et variantes basses/hautes justifiées.
-- **Traitement attendu :** Recalculer des variantes prudent/central/favorable avec plages sourcées ou choisies explicitement ; distinguer incertitude de données, transfert, acquisition et réachat. Aucun coefficient marketing, effet retardé, saturation ou élasticité ne devient causal du seul fait d’une régression. Une estimation hors domaine porte son avertissement ; les bornes sont des scénarios conditionnels, pas une précision statistique allemande validée.
+- **Traitement attendu :** Appliquer MD-07 et conserver la provenance de chaque facteur. Recalculer des variantes prudent/central/favorable avec plages sourcées ou choisies explicitement ; distinguer incertitude de données, transfert, acquisition et réachat. Aucun coefficient marketing, effet retardé, saturation ou élasticité ne devient causal du seul fait d’une régression. Une estimation hors domaine porte son avertissement ; les bornes sont des scénarios conditionnels, pas une précision statistique allemande validée.
 - **Sorties :** Plage conditionnelle et facteurs d’incertitude transmis à F07.
 - **Composant / interaction UI :** Courbes ou bandes de scénarios, légende et accès aux hypothèses.
 - **Critère de validation / acceptation :** Les bornes sont reliées aux hypothèses exactes et aucun niveau de confiance n’est inventé. Un modèle ajusté sur NL/DK/SE ne reçoit pas un label « validé Allemagne ». Une hypothèse manquante reste visible et ne rétrécit pas artificiellement la plage.
@@ -389,6 +510,6 @@ La recette fonctionnelle devra parcourir F01 → F02 → F03 → F04/F05 → F06
 
 Les priorités de réalisation proposées sont : d’abord F01 et les analyses F02 nécessaires à la qualification des hypothèses ; ensuite F03–F05 avec résultats partiels explicites, puis calendrier, comparaison et restitution F06–F08. Cela ne supprime aucune exigence. Avant de coder les analyses encore non réalisées, vérifier les croisements d’enquête, les courbes de prix et le rapprochement des verbatims sur des cas contrôlés. Un pilote allemand et des données pays–campagne–période avec commandes/cohortes seront nécessaires avant de revendiquer une validation locale ou causale ; leur exécution reste hors de l’application.
 
-L’étape suivante est la revue de ces exigences avec les bénéficiaires, puis leur priorisation de réalisation et la définition des cas de recette. Le choix d’architecture, la conception détaillée des écrans, l’implémentation du site et le choix ou l’entraînement d’un modèle ML interviendront séparément après cette validation. Aucun critère ci-dessus n’est présenté comme déjà testé sur une application.
+L’étape suivante est la validation ciblée du contrat MD-01 à MD-08 avec les bénéficiaires : compléter les paramètres et arbitrages ouverts, puis préparer le prototype de calcul et les cas de recette. Le POC forecasting sera une étape séparée selon MD-08. Le choix d’architecture, la conception détaillée des écrans, l’implémentation du site et le choix ou l’entraînement d’un modèle ML interviendront séparément après cette validation. Aucun critère ci-dessus n’est présenté comme déjà testé sur une application.
 
 Sources : [brief LUMEN](LUMEN_Case_Brief.md), [documentation des données](data/README_data.md) et [analyse des datasets](analysis/ANALYSE_DATASETS_LUMEN.md).
