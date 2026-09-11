@@ -9,3 +9,9 @@ Continuing from [Décomposer les fonctions en fonctionnalités](chatgpt-conversa
 continue
 
 Résultat : travail sur feat/decision-engine depuis main 9f5c19a, documents b557af9 déjà intégrés. Moteur Python versionné, contrats JSON, Ridge sérialisable, scénarios DE A/B explicites, calculs économiques, variantes et recommandation conditionnelle ; exemple complet et contrat technique. 39 tests réussis, dont 1 287 prédictions Ridge comparées au POC à 1e-7 canette. Aucun frontend, push ou merge ; commit local demandé.
+
+## Entrée 3 — 2026-09-11
+
+push tt dans le main et merge pour que sa soit mis a joiur sur github
+
+Résultat : publication de la branche du moteur et fusion dans main demandées explicitement ; vérification distante prévue après fusion.
