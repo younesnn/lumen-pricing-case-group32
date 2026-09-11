@@ -537,3 +537,8 @@ Les priorités de réalisation proposées sont : d’abord F01 et les analyses F
 L’étape suivante après la [spécification UX](UX_STRATEGY_SIMULATOR.md) est de construire le moteur de calcul versionné et ses contrats d’entrée/sortie, avec les recettes MD-08 et MD-09 avant frontend. Faire accepter les hypothèses nécessaires au scénario de recette ; les autres résultats restent partiels. La qualification du forecast historique et la collecte DE se poursuivent séparément selon MD-09. Aucun critère UI n’est présenté comme déjà testé sur une application.
 
 Sources : [brief LUMEN](LUMEN_Case_Brief.md), [documentation des données](data/README_data.md) et [analyse des datasets](analysis/ANALYSE_DATASETS_LUMEN.md).
+
+
+## État du noyau technique — 11 septembre 2026
+
+Le moteur local versionné 1.0.0 implémente désormais les calculs historiques, scénarios A/B, économie, variantes nommées et recommandation conditionnelle décrits dans [ENGINE_CONTRACT.md](ENGINE_CONTRACT.md). Les 39 tests couvrent les recettes et la non-régression Ridge ; ils ne valident ni les hypothèses DE ni une interface. Voir ce contrat pour les limites effectivement implémentées (notamment recommandation à un critère, pas encore recherche de bascule ou Pareto). La prochaine étape est l’acceptation des hypothèses et explications, puis l’intégration du service/persistance et du prototype UX.
