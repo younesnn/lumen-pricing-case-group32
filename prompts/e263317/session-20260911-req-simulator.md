@@ -7,3 +7,9 @@ Continuing from [Décomposer les fonctions en fonctionnalités](chatgpt-conversa
 Contexte : référence jointe à la conversation « Décomposer les fonctions en fonctionnalités », aperçu partiel ; elle ne constitue pas un nouveau prompt de cette session. L’identifiant est fourni dans la demande elle-même, sans message d’identification séparé.
 
 Résultat : dernier main récupéré (e127c6a), branche codex/requirements-strategy-simulator préparée ; CADRAGE_SYSTEME.md détaillé en 24 sous-fonctions avec six rubriques chacune, Strategy Simulator F03–F08 et fondations F01–F02 ; mission et contraintes conservées. Vérification documentaire et git diff --check réussis. Aucun site ni ML implémenté ; aucune fusion dans main.
+
+## Entrée 2 — 2026-09-11
+
+yes
+
+Résultat : autorisation explicite reçue pour publier la branche et ouvrir une PR, sans fusion dans main.
