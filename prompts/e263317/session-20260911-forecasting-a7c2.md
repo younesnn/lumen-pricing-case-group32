@@ -11,3 +11,9 @@ Continuing from [Décomposer les fonctions en fonctionnalités](chatgpt-conversa
 regarde maintenant et continue
 
 Résultat : main actualisé à be2c3f3 ; POC reproductible exécuté sur branche poc/forecasting-12-months, rapport POC_FORECASTING.md et résultats par horizon/pays/canal ajoutés ; Ridge recommandée provisoirement, limites annuelles et transfert allemand explicités ; frontend et sources inchangés, aucun push ni fusion.
+
+## 3 — 2026-09-11 (heure de réception non disponible)
+
+push dans le main
+
+Résultat demandé : publication de la branche du POC et intégration à main via pull request.
