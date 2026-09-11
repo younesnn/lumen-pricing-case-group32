@@ -2,7 +2,7 @@
 
 Référence commune : la version de ce fichier sur la branche `main`. Avant de commencer une tâche, récupérer les derniers changements de `main` et lire ce document. Les versions sur les branches de travail sont des propositions tant que leur Pull Request n’est pas fusionnée.
 
-Statut : besoin et mission retenus avec l’utilisateur. Modèle décisionnel MD-01 à MD-08 proposé et F04 affiné ; exigences fonctionnelles fondées sur l’audit des douze datasets du 11 septembre 2026, proposées pour revue ; hypothèses de transfert et seuils métier à arbitrer. Aucun site ni modèle ML implémenté dans cette étape.
+Statut : contrat F04 et moteur de simulation fixé ci-dessous après revue du POC sur main à 295e0e6 ; sélection historique provisoire, hypothèses DE et seuils métier explicitement ouverts. Le POC historique existe ; cette étape documentaire ne code ni moteur applicatif ni frontend. Voir [revue critique](REVUE_POC_FORECAST.md) et [spécification UX MVP](UX_STRATEGY_SIMULATOR.md).
 
 ## Besoin de référence
 
@@ -85,7 +85,7 @@ Chaque relation conserve séparément la nature de ses entrées et celle de sa r
 
 Le registre conserve pour chaque entrée : valeur ou manque, unité, pays, période, fichier/champ ou justification, classe, domaine, plage de sensibilité, responsable de validation et version. Les substitutions deviennent ASSUMPTION. Les formules arithmétiques ci-dessous sont MODEL ; les coefficients empiriques descriptifs restent DATA et leur transfert à DE devient ASSUMPTION.
 
-Notation commune : scénario `s`, canal de vente `c`, canal marketing `k`, période `t`, période d’acquisition `τ`, âge de cohorte `j=t−τ`. Proposition de travail **ASSUMPTION à valider** : pas mensuel et horizon de 12 mois depuis le lancement, mêmes conventions pour toutes les options ; les décalages de dates conservent cette durée. Volumes en canettes de 330 ml, prix en €/canette, budget et résultats en €, CAC en €/client. Les trois canaux de vente et les quatre canaux marketing restent deux dimensions distinctes.
+Notation commune : scénario `s`, canal de vente `c`, canal marketing `k`, période `t`, période d’acquisition `τ`, âge de cohorte `j=t−τ`. Convention MVP fixée **ASSUMPTION de planification** : pas mensuel et horizon principal de 12 mois calendaires depuis le lancement, avec cumuls secondaires à 3 et 6 mois ; mêmes conventions pour toutes les options et durée conservée lors des décalages de date. Ce choix ne constitue pas une précision prédictive validée. Volumes en canettes de 330 ml, prix en €/canette, budget et résultats en €, CAC en €/client. Les trois canaux de vente et les quatre canaux marketing restent deux dimensions distinctes.
 
 Entrées de stratégie **ASSUMPTION** : prix par canal `P[c,t]`, cible/positionnement, territoire accessible, date, canaux disponibles, budgets `B[k,t]`, coûts fixes `F[t]`, investissement initial `I0`, contraintes et priorités humaines. Prix, budgets, coûts et volumes sont non négatifs ; CAC utilisé strictement positif ; proportions dans [0,1], poids et allocations normalisés. Une marge peut être négative. Un canal fermé reçoit zéro volume, sans redistribution implicite. Les éventuelles limites de capacité requièrent **EXTERNAL** (stocks/distribution DE) ou une **ASSUMPTION** visible ; sans elles, on estime la demande conditionnelle, pas des ventes garanties.
 
@@ -190,9 +190,31 @@ Recettes documentaires indépendantes, à transcrire ultérieurement en vérific
 | CAC requis manquant, réponse prix absente, contrefactuel absent | Blocage des seuls volumes/effets prix/ROI dépendants ; marge unitaire disponible |
 | Mode A total et acquisitions du mode B sélectionnés simultanément | Refus du cumul tant que la base n’est pas décomposée |
 
-Avant prototype, faire arbitrer horizon/pas, convention économique DE et coûts inclus, mode A ou B, niveau accessible/base organique, réponse prix, allocation marketing–vente, cohortes et plages plausibles. Fixer aussi contraintes budgétaires, définition de retour privilégiée, contrefactuel et priorités premium/finance. Ces arbitrages n’exigent pas de prolonger indéfiniment le cadrage : une première version peut fonctionner sur hypothèses acceptées et résultats partiels.
+Avant prototype, appliquer horizon/pas MD-09 et faire arbitrer convention économique DE et coûts inclus, mode A ou B, niveau accessible/base organique, réponse prix, allocation marketing–vente, cohortes et plages plausibles. Fixer aussi contraintes budgétaires, définition de retour privilégiée, contrefactuel et priorités premium/finance. Ces arbitrages n’exigent pas de prolonger indéfiniment le cadrage : une première version peut fonctionner sur hypothèses acceptées et résultats partiels.
 
-Ensuite seulement, préparer un POC de prévision des marchés historiques : baseline naïve, méthode statistique, puis ML si utile, avec validation temporelle et mesures d’erreur par horizon/canal ; validation sur pays tenu à l’écart en complément. Ne pas revendiquer une baseline annuelle validée sur plusieurs cycles avec seulement 78 semaines. Ce POC ne remplacera ni l’échelle allemande ni un pilote d’incrémentalité. Aucun entraînement n’est autorisé dans la présente étape.
+Le [POC historique](POC_FORECASTING.md) a désormais été exécuté ; sa [revue](REVUE_POC_FORECAST.md) fixe le contrat MD-09 suivant. La validation pays tenu à l’écart et la qualification opérationnelle restent ouvertes. Aucun nouvel entraînement n’est réalisé dans cette étape.
+
+### MD-09 — Contrat forecast et simulation retenu après POC
+
+| Point | Décision applicable au MVP | Statut / limite |
+|---|---|---|
+| Cible historique | `units_sold`, canettes 330 ml par semaine, pays NL/DK/SE et canal ; revenu calculé séparément | DATA source ; prévision MODEL, revenu net historique non établi |
+| Cible DE | Demande conditionnelle par canal et période via MD-03 ou MD-04 ; ventes seulement sous disponibilité explicitée | MODEL sous ASSUMPTION ; aucune précision DE mesurée |
+| Horizons | Simulation principale 12 mois calendaires depuis lancement, cumuls 3/6 mois. Référence historique privilégiée 13 semaines, secondaire 26 ; 52 semaines uniquement exploratoires | Choix de planification fixé ; ni 13 semaines = 3 mois exacts, ni 12 mois = forecast fiable |
+| Modèle historique | Ridge log-volume, tendance, sin/cos annuels et indicatrices pays–canal, alpha=1, standardisation train ; conserver dernière valeur et naïf annuel comme références | Provisoire ; RF exclue, bénéfice global insuffisant |
+| Indice × tendance | Profil conditionnel explicable ; candidat prioritaire si provenance temporelle indépendante vérifiée et nouveaux tests concluants | Décision ouverte ; pas de sélection automatique au score actuel |
+| Entrées du forecast | Volumes passés dédupliqués, dates, pays, canal ; origine et version d’ajustement | Pas de prix réalisé futur, budget, météo DE, CAC, LTV ni effet promotion appris |
+| Entrées DE | Mode A : niveau DE, mix, ouverture/montée en charge, profil saisonnier unique et réponse prix ; mode B : base organique, budget, CAC DE, déduplication, incrémentalité, allocation et cohortes ; prix/coûts/calendriers MD-05/06 | Valeurs et plages DE ouvertes, jamais copiées automatiquement des historiques |
+| Sorties | Unités et CA consommateur mensuels/par canal, cumuls 3/6/12 ; revenu net conventionnel et contribution, couverture et payback via MD-05/06 ; méthode, versions, domaine et manques | Résultats partiels permis ; ROI incrémental exige contrefactuel |
+| Incertitude | Erreurs historiques par origine/horizon séparées des variantes prudent/central/favorable DE, hypothèses et valeurs de bascule visibles | Aucun intervalle prédictif, niveau de confiance ou probabilité de perte DE calibrés |
+
+**Règle de sélection/fallback.** Ridge est la référence historique actuelle, pas un sélecteur automatique à chaque scénario. Avant remplacement, préenregistrer seuils de gain et biais métier, comparer aux baselines et modèles interprétables sur mêmes origines/lignes, par horizon et canal, puis tester sur période intacte. Ces seuils sont une **décision ouverte**. À gain insuffisant, garder la solution admissible la plus simple. Si Ridge ne peut calculer, proposer explicitement dernière valeur (si observation disponible) ou naïf annuel (si toutes les références requises existent) comme référence non qualifiée ; l’utilisateur voit la raison et la version. Sans données admissibles : non calculable. Un fallback historique ne remplit jamais une échelle DE absente. Une erreur technique conserve l’état échec, sans substitution silencieuse.
+
+**Provenance.** DATA : observations synthétiques, pays/canal/date, indice fourni avec provenance incomplète. MODEL : ajustement Ridge, normalisation et équations MD-03–06, sans label de validation implicite. ASSUMPTION : transfert DE, poids d’analogues, niveau/mix/prix, conventions calendaires, réponse prix et acquisition. EXTERNAL : distribution, disponibilité, données de pilote, coûts/conditions DE à obtenir ; le manque reste visible. Un remplacement accepté est ASSUMPTION et conserve la référence EXTERNAL manquante. Les sorties MODEL héritent de cette chaîne.
+
+**Calendrier fixé pour le MVP.** Lancement au premier jour d’un mois ; les douze périodes sont des mois calendaires entiers. Une prévision hebdomadaire éventuellement utilisée est répartie uniformément sur ses sept jours puis sommée par mois (ASSUMPTION faute de ventes journalières). Exiger la couverture de tous les jours, sans extrapolation de bord silencieuse. Les parts hors fenêtre sont exclues et tracées ; les sommes sur la fenêtre se réconcilient. Le mode mensuel MD-03 conserve sa normalisation annuelle, sans ajouter une deuxième saison ni copier la croissance historique. Les métriques POC restent hebdomadaires ; qualité de l’agrégation mensuelle et dates intramensuelles : décisions ouvertes avant extension.
+
+**Qualification ouverte.** Davantage de cycles et d’origines, test final intact, test pays exclu séparant profil et calibration du niveau, antériorité de l’indice, seuils métier, contrôle du biais de retransformation et de l’extrapolation, compréhension des explications, puis pilote DE. Les coefficients allemands, conventions économiques et plages de sensibilité exigent acceptation explicite ; aucun choix numérique n’est inventé pour débloquer un résultat.
 
 ## Exigences détaillées par fonction
 
@@ -322,7 +344,7 @@ Traçabilité : FP-01 → FS-03 ; contraintes CT-03, CT-05, CT-06, CT-07, CT-08,
 
 Traçabilité : FP-01 → FS-04 ; contraintes CT-01, CT-02, CT-05, CT-07, CT-08, CT-09.
 
-Contrat applicable : MD-01 à MD-04 pour les entrées, provenances et deux modes de volume ; MD-05 pour les agrégations ; MD-07/MD-08 pour les limites et recettes. Chaque résultat F04 conserve les classes DATA/MODEL/ASSUMPTION/EXTERNAL de sa chaîne et la liste des entrées manquantes. Les modes A et B sont exclusifs tant que la base totale n’est pas décomposée. Demande et ventes ne sont assimilées que sous hypothèse explicite de disponibilité.
+Contrat applicable : MD-09 fixe cible, horizons, sélection/fallback et limites du forecast ; MD-01 à MD-04 pour les entrées, provenances et deux modes de volume ; MD-05 pour les agrégations ; MD-07/MD-08 pour les limites et recettes. Chaque résultat F04 conserve les classes DATA/MODEL/ASSUMPTION/EXTERNAL de sa chaîne et la liste des entrées manquantes. Les modes A et B sont exclusifs tant que la base totale n’est pas décomposée. Demande et ventes ne sont assimilées que sous hypothèse explicite de disponibilité.
 
 #### F04.01 — Expliciter le passage vers des ventes allemandes
 
@@ -503,7 +525,7 @@ La recette fonctionnelle devra parcourir F01 → F02 → F03 → F04/F05 → F06
 
 | Décision à arbitrer avec les parties prenantes | Exigences concernées | Condition avant validation métier |
 |---|---|---|
-| Horizon, pas temporel, date de référence et périmètre géographique | F03, F04, F06, F07 | Fixer un référentiel commun et ses unités |
+| Date/mois de lancement et portée géographique DE | F03, F04, F06, F07 | Renseigner le scénario ; horizon 12 mois et lectures 3/6, pas mensuel fixés en MD-09 |
 | Budget disponible, canaux et contraintes de lancement | F03, F05, F06 | Renseigner limites, allocation marketing distincte du mix de ventes et disponibilité du referral |
 | Convention économique et retour marketing | F05 | Valider fiscalité/consigne si pertinentes, postes inclus, revenu brut/net ; distinguer couverture budgétaire, retour incrémental et rentabilité totale, définir le contrefactuel si nécessaire |
 | Critères documentables du premium et priorités marketing/finance | F02, F07, F08 | Faire approuver les preuves, critères et éventuelles pondérations |
@@ -512,6 +534,6 @@ La recette fonctionnelle devra parcourir F01 → F02 → F03 → F04/F05 → F06
 
 Les priorités de réalisation proposées sont : d’abord F01 et les analyses F02 nécessaires à la qualification des hypothèses ; ensuite F03–F05 avec résultats partiels explicites, puis calendrier, comparaison et restitution F06–F08. Cela ne supprime aucune exigence. Avant de coder les analyses encore non réalisées, vérifier les croisements d’enquête, les courbes de prix et le rapprochement des verbatims sur des cas contrôlés. Un pilote allemand et des données pays–campagne–période avec commandes/cohortes seront nécessaires avant de revendiquer une validation locale ou causale ; leur exécution reste hors de l’application.
 
-L’étape suivante est la validation ciblée du contrat MD-01 à MD-08 avec les bénéficiaires : compléter les paramètres et arbitrages ouverts, puis préparer le prototype de calcul et les cas de recette. Le POC forecasting sera une étape séparée selon MD-08. Le choix d’architecture, la conception détaillée des écrans, l’implémentation du site et le choix ou l’entraînement d’un modèle ML interviendront séparément après cette validation. Aucun critère ci-dessus n’est présenté comme déjà testé sur une application.
+L’étape suivante après la [spécification UX](UX_STRATEGY_SIMULATOR.md) est de construire le moteur de calcul versionné et ses contrats d’entrée/sortie, avec les recettes MD-08 et MD-09 avant frontend. Faire accepter les hypothèses nécessaires au scénario de recette ; les autres résultats restent partiels. La qualification du forecast historique et la collecte DE se poursuivent séparément selon MD-09. Aucun critère UI n’est présenté comme déjà testé sur une application.
 
 Sources : [brief LUMEN](LUMEN_Case_Brief.md), [documentation des données](data/README_data.md) et [analyse des datasets](analysis/ANALYSE_DATASETS_LUMEN.md).
