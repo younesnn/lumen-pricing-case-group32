@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Scenario, EvaluationResult } from '../types/simulator';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
-import { GitCompare, TrendingUp, DollarSign, Award, AlertCircle, Check } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 interface ComparisonViewProps {
   scenarios: Scenario[];
@@ -15,8 +15,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   scenarios,
   evaluations,
   selectedIds,
-  onToggleCompare,
-  onSelectActiveScenario
+  onToggleCompare
 }) => {
   const [horizon, setHorizon] = useState<3 | 6 | 12>(12);
   const [referenceId, setReferenceId] = useState<string>(selectedIds[0] || scenarios[0]?.id || '');
@@ -41,10 +40,10 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
     const ck = getCheckpoint(evaluations[sc.id]);
     return {
       name: sc.name.length > 18 ? sc.name.slice(0, 18) + '...' : sc.name,
-      'Revenu Net (k€)': ck ? Math.round(ck.netRevenue / 1000) : 0,
+      'Net Revenue (k€)': ck ? Math.round(ck.netRevenue / 1000) : 0,
       'Marketing (k€)': ck ? Math.round(ck.marketingSpend / 1000) : 0,
-      'Contribution Nette (k€)': ck ? Math.round(ck.contributionAfterMarketing / 1000) : 0,
-      'Volume (k u)': ck ? Math.round(ck.volumeTotal / 1000) : 0
+      'Net Contribution (k€)': ck ? Math.round(ck.contributionAfterMarketing / 1000) : 0,
+      'Volume (k cans)': ck ? Math.round(ck.volumeTotal / 1000) : 0
     };
   });
 
@@ -53,16 +52,16 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
       {/* Header & Controls */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <h2 className="text-lg font-bold text-slate-900">Comparaison Multidimensionnelle des Options (F06–F07)</h2>
+          <h2 className="text-lg font-bold text-slate-900">Multi-Option Comparative Analysis (F06–F07)</h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Mettez en concurrence 2 ou 3 stratégies pour évaluer les arbitrages de volume, de marge et d'intensité marketing.
+            Benchmark 2 or 3 strategies to assess tradeoffs across sales volume, margin capture, and marketing intensity.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {/* Horizon Selector */}
           <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs font-medium">
-            <span className="px-2 text-slate-500 text-2xs">Horizon :</span>
+            <span className="px-2 text-slate-500 text-2xs">Horizon:</span>
             {[3, 6, 12].map(h => (
               <button
                 key={h}
@@ -83,7 +82,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
       {/* Scenario Selector Checkbox Bar */}
       <div className="bg-white p-3.5 border border-slate-200 rounded-xl shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-slate-700">Options comparées (2 à 3 recommandées) :</span>
+          <span className="font-semibold text-slate-700">Compared Options (2 to 3 recommended):</span>
           <div className="flex flex-wrap gap-2">
             {scenarios.map(sc => {
               const isChecked = selectedIds.includes(sc.id);
@@ -107,7 +106,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
 
         {compareScenarios.length > 1 && (
           <div className="flex items-center gap-2 text-2xs">
-            <span className="text-slate-500">Option de référence (Base) :</span>
+            <span className="text-slate-500">Baseline Reference Option:</span>
             <select
               value={currentRefId}
               onChange={e => setReferenceId(e.target.value)}
@@ -124,9 +123,9 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
       {compareScenarios.length < 2 ? (
         <div className="p-8 text-center bg-white border border-slate-200 rounded-xl space-y-3">
           <AlertCircle className="w-8 h-8 text-amber-500 mx-auto" />
-          <h3 className="font-semibold text-slate-800 text-sm">Sélectionnez au moins 2 options</h3>
+          <h3 className="font-semibold text-slate-800 text-sm">Select at least 2 options</h3>
           <p className="text-xs text-slate-500 max-w-md mx-auto">
-            Cochez au moins deux scénarios ci-dessus pour afficher le tableau comparatif, les deltas et l'analyse de ROI incrémental.
+            Check at least two scenarios above to display the comparative table, differential deltas, and incremental ROI analysis.
           </p>
         </div>
       ) : (
@@ -135,10 +134,10 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
           <div className="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden">
             <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
               <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                Tableau Synthétique des Résultats ({horizon} Mois)
+                Summary Results Matrix ({horizon} Months)
               </h3>
               <span className="text-3xs text-slate-500">
-                Réf: <strong className="text-slate-800">{activeRefScenario?.name}</strong>
+                Baseline: <strong className="text-slate-800">{activeRefScenario?.name}</strong>
               </span>
             </div>
 
@@ -146,7 +145,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
               <table className="w-full text-xs text-left">
                 <thead className="bg-slate-50/50 text-slate-500 text-3xs uppercase font-semibold border-b border-slate-200">
                   <tr>
-                    <th className="py-2.5 px-4">Indicateur Clé</th>
+                    <th className="py-2.5 px-4">Key Metric</th>
                     {compareScenarios.map(sc => (
                       <th key={sc.id} className="py-2.5 px-4 text-right">
                         <div className="font-bold text-slate-900 text-xs">{sc.name}</div>
@@ -159,7 +158,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   {/* Volume */}
                   <tr className="hover:bg-slate-50/50">
                     <td className="py-2.5 px-4 font-semibold text-slate-800">
-                      Volume total écoulé ({horizon}m)
+                      Total Sold Volume ({horizon}m)
                     </td>
                     {compareScenarios.map(sc => {
                       const ck = getCheckpoint(evaluations[sc.id]);
@@ -168,11 +167,11 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                       return (
                         <td key={sc.id} className="py-2.5 px-4 text-right font-mono">
                           <div className="font-bold text-slate-900">
-                            {ck ? ck.volumeTotal.toLocaleString('fr-FR') : '—'} u
+                            {ck ? ck.volumeTotal.toLocaleString('en-US') : '—'} cans
                           </div>
                           {!isRef && delta !== 0 && (
                             <div className={`text-3xs ${delta > 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
-                              {delta > 0 ? '+' : ''}{delta.toLocaleString('fr-FR')} u
+                              {delta > 0 ? '+' : ''}{delta.toLocaleString('en-US')} cans
                             </div>
                           )}
                         </td>
@@ -183,13 +182,13 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   {/* CA Brut */}
                   <tr className="hover:bg-slate-50/50">
                     <td className="py-2.5 px-4 font-semibold text-slate-800">
-                      CA Consommateur TTC
+                      Gross Consumer Turnover (incl. VAT)
                     </td>
                     {compareScenarios.map(sc => {
                       const ck = getCheckpoint(evaluations[sc.id]);
                       return (
                         <td key={sc.id} className="py-2.5 px-4 text-right font-mono">
-                          {ck ? Math.round(ck.grossTurnover).toLocaleString('fr-FR') : '—'} €
+                          {ck ? `€${Math.round(ck.grossTurnover).toLocaleString('en-US')}` : '—'}
                         </td>
                       );
                     })}
@@ -198,7 +197,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   {/* Revenu Net */}
                   <tr className="hover:bg-slate-50/50">
                     <td className="py-2.5 px-4 font-semibold text-slate-800">
-                      Revenu Net Retenu LUMEN
+                      Net Recognized LUMEN Revenue
                     </td>
                     {compareScenarios.map(sc => {
                       const ck = getCheckpoint(evaluations[sc.id]);
@@ -207,11 +206,11 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                       return (
                         <td key={sc.id} className="py-2.5 px-4 text-right font-mono">
                           <div className="font-bold text-emerald-800">
-                            {ck ? Math.round(ck.netRevenue).toLocaleString('fr-FR') : '—'} €
+                            {ck ? `€${Math.round(ck.netRevenue).toLocaleString('en-US')}` : '—'}
                           </div>
                           {!isRef && delta !== 0 && (
                             <div className={`text-3xs ${delta > 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
-                              {delta > 0 ? '+' : ''}{Math.round(delta).toLocaleString('fr-FR')} €
+                              {delta > 0 ? '+€' : '−€'}{Math.abs(Math.round(delta)).toLocaleString('en-US')}
                             </div>
                           )}
                         </td>
@@ -222,7 +221,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   {/* Taux Marge Brute */}
                   <tr className="hover:bg-slate-50/50">
                     <td className="py-2.5 px-4 font-semibold text-slate-800">
-                      Taux de Marge Brute (% du Net)
+                      Gross Margin Rate (% of Net)
                     </td>
                     {compareScenarios.map(sc => {
                       const ck = getCheckpoint(evaluations[sc.id]);
@@ -237,13 +236,13 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   {/* Dépenses Marketing */}
                   <tr className="hover:bg-slate-50/50">
                     <td className="py-2.5 px-4 font-semibold text-slate-800">
-                      Budget Marketing Cumulé
+                      Cumulative Marketing Budget
                     </td>
                     {compareScenarios.map(sc => {
                       const ck = getCheckpoint(evaluations[sc.id]);
                       return (
                         <td key={sc.id} className="py-2.5 px-4 text-right font-mono text-purple-700 font-semibold">
-                          {ck ? Math.round(ck.marketingSpend).toLocaleString('fr-FR') : '—'} €
+                          {ck ? `€${Math.round(ck.marketingSpend).toLocaleString('en-US')}` : '—'}
                         </td>
                       );
                     })}
@@ -252,7 +251,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   {/* Contribution Nette */}
                   <tr className="hover:bg-slate-50/50 bg-slate-50/30">
                     <td className="py-2.5 px-4 font-bold text-slate-900">
-                      Contribution Nette après Marketing
+                      Net Contribution after Marketing
                     </td>
                     {compareScenarios.map(sc => {
                       const ck = getCheckpoint(evaluations[sc.id]);
@@ -262,11 +261,11 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                       return (
                         <td key={sc.id} className="py-2.5 px-4 text-right font-mono">
                           <div className={`font-bold text-sm ${isPos ? 'text-emerald-700' : 'text-rose-600'}`}>
-                            {ck ? Math.round(ck.contributionAfterMarketing).toLocaleString('fr-FR') : '—'} €
+                            {ck ? `€${Math.round(ck.contributionAfterMarketing).toLocaleString('en-US')}` : '—'}
                           </div>
                           {!isRef && delta !== 0 && (
                             <div className={`text-3xs font-semibold ${delta > 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
-                              {delta > 0 ? '+' : ''}{Math.round(delta).toLocaleString('fr-FR')} € vs Réf
+                              {delta > 0 ? '+€' : '−€'}{Math.abs(Math.round(delta)).toLocaleString('en-US')} vs Base
                             </div>
                           )}
                         </td>
@@ -274,47 +273,47 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                     })}
                   </tr>
 
-                  {/* Résultat d'Exploitation */}
+                  {/* Operating Profit */}
                   <tr className="hover:bg-slate-50/50">
                     <td className="py-2.5 px-4 font-semibold text-slate-800">
-                      Résultat d'Exploitation
+                      Operating Profit (EBIT)
                     </td>
                     {compareScenarios.map(sc => {
                       const ck = getCheckpoint(evaluations[sc.id]);
                       const isPos = (ck?.operatingProfit || 0) >= 0;
                       return (
                         <td key={sc.id} className={`py-2.5 px-4 text-right font-mono font-bold ${isPos ? 'text-emerald-700' : 'text-rose-600'}`}>
-                          {ck ? Math.round(ck.operatingProfit).toLocaleString('fr-FR') : '—'} €
+                          {ck ? `€${Math.round(ck.operatingProfit).toLocaleString('en-US')}` : '—'}
                         </td>
                       );
                     })}
                   </tr>
 
-                  {/* Mois de Payback */}
+                  {/* Payback Month */}
                   <tr className="hover:bg-slate-50/50">
                     <td className="py-2.5 px-4 font-semibold text-slate-800">
-                      Mois de Payback (Couverture du Cash)
+                      Payback Month (Cash Recovery)
                     </td>
                     {compareScenarios.map(sc => {
                       const ev = evaluations[sc.id];
                       return (
                         <td key={sc.id} className="py-2.5 px-4 text-right font-semibold text-slate-800">
-                          {ev?.paybackCrossingMonth ? `Mois ${ev.paybackCrossingMonth}` : 'Non atteint'}
+                          {ev?.paybackCrossingMonth ? `Month ${ev.paybackCrossingMonth}` : 'Not achieved'}
                         </td>
                       );
                     })}
                   </tr>
 
-                  {/* ROI Incrémental vs Référence */}
+                  {/* Incremental ROI vs Reference */}
                   <tr className="hover:bg-slate-50/50 bg-emerald-50/20">
                     <td className="py-2.5 px-4 font-bold text-emerald-950">
-                      ROI Incrémental (ΔContribution / ΔMarketing)
+                      Incremental ROI (ΔContribution / ΔMarketing)
                     </td>
                     {compareScenarios.map(sc => {
                       if (sc.id === activeRefScenario?.id) {
                         return (
                           <td key={sc.id} className="py-2.5 px-4 text-right text-slate-400 text-3xs font-mono">
-                            Base de référence
+                            Baseline reference
                           </td>
                         );
                       }
@@ -338,10 +337,10 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
           {/* Comparative Chart */}
           <div className="bg-white p-4 border border-slate-200 rounded-xl shadow-xs">
             <h3 className="text-xs font-semibold text-slate-900 mb-1">
-              Visualisation Comparative : Revenu Net vs Dépenses Marketing vs Contribution
+              Comparative Visual: Net Revenue vs Marketing Spend vs Net Contribution
             </h3>
             <p className="text-2xs text-slate-500 mb-4">
-              Comparaison en milliers d'euros (k€) sur l'horizon {horizon} mois.
+              Comparison in thousands of euros (k€) across {horizon}-month horizon.
             </p>
 
             <div className="h-64 w-full">
@@ -352,12 +351,12 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   <YAxis tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} tickLine={false} />
                   <Tooltip
                     contentStyle={{ backgroundColor: '#0f172a', borderRadius: '8px', color: '#fff', fontSize: '11px' }}
-                    formatter={(val: any) => [`${val} k€`, '']}
+                    formatter={(val: any) => [`€${val}k`, '']}
                   />
                   <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }} />
-                  <Bar dataKey="Revenu Net (k€)" fill="#059669" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Net Revenue (k€)" fill="#059669" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="Marketing (k€)" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="Contribution Nette (k€)" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Net Contribution (k€)" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

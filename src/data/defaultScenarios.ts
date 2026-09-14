@@ -3,9 +3,9 @@ import { Scenario } from '../types/simulator';
 export const DEFAULT_SCENARIOS: Scenario[] = [
   {
     id: 'demo-dtc',
-    name: 'Option A : Lancement DTC Prioritaire',
+    name: 'Option A : Priority DTC Launch',
     revision: 'v1.2',
-    description: 'Stratégie axée sur le digital avec marge unitaire élevée, apprentissage direct des consommateurs urbains allemands avant montée en grande distribution.',
+    description: 'Digital-first strategy with high unit margins and direct feedback from urban German consumers before scaling into supermarkets.',
     country: 'DE',
     launchDate: '2026-07-01',
     horizonMonths: 12,
@@ -14,9 +14,9 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
     commercialA: {
       level: {
         value: 12000,
-        unit: 'canettes/mois',
+        unit: 'cans/month',
         kind: 'ASSUMPTION',
-        source: 'Hypothèse transfert NL ajustée population urbaine cible',
+        source: 'Transferred assumption from NL, adjusted for German target urban audience',
         accepted: true
       },
       mix: {
@@ -24,14 +24,14 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
           value: 0.60,
           unit: 'ratio',
           kind: 'ASSUMPTION',
-          source: 'Choix stratégique comité Freya - Focus marge initiale',
+          source: 'Executive committee strategy - Initial margin & community focus',
           accepted: true
         },
         'Retail/Grocery': {
           value: 0.40,
           unit: 'ratio',
           kind: 'ASSUMPTION',
-          source: 'Partenariat pilote 50 magasins bio/urbains Berlin & Munich',
+          source: 'Pilot distribution across 50 organic/specialty stores in Berlin & Munich',
           accepted: true
         }
       },
@@ -39,13 +39,12 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
         'DTC Online': [0.4, 0.6, 0.75, 0.85, 0.95, 1.0, 1.0, 1.05, 1.1, 1.15, 1.2, 1.25],
         'Retail/Grocery': [0.2, 0.35, 0.5, 0.7, 0.85, 1.0, 1.0, 1.0, 1.1, 1.1, 1.2, 1.2]
       },
-      // 12 monthly factors for German season (peak in summer months Jul-Aug, dip in Jan)
       seasonProfile: [1.25, 1.30, 1.10, 0.95, 0.85, 0.80, 0.75, 0.85, 1.00, 1.10, 1.20, 1.25]
     },
     marketingBudgets: {
       'Digital Ads (Meta/TikTok)': [4500, 4000, 3500, 3000, 2500, 2500, 2000, 2000, 2500, 2500, 3000, 3000],
-      'Influence & Créateurs DE': [3000, 2500, 2000, 1500, 1000, 1000, 800, 800, 1200, 1500, 1800, 2000],
-      'Événements & Échantillonnage': [2500, 1500, 1000, 500, 500, 500, 400, 400, 800, 1000, 1200, 1500]
+      'Influencer & Creator DE': [3000, 2500, 2000, 1500, 1000, 1000, 800, 800, 1200, 1500, 1800, 2000],
+      'Events & Sampling': [2500, 1500, 1000, 500, 500, 500, 400, 400, 800, 1000, 1200, 1500]
     },
     economics: {
       convention: 'gross_with_vat_and_deposit',
@@ -53,116 +52,116 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
         value: 0.19,
         unit: 'ratio',
         kind: 'DATA',
-        source: 'Code fiscal allemand (MwSt 19% sur boissons rafraîchissantes)',
+        source: 'German statutory VAT (MwSt 19% on soft drinks & energy beverages)',
         accepted: true
       },
       depositPfand: {
         value: 0.25,
-        unit: 'EUR/canette',
+        unit: 'EUR/can',
         kind: 'DATA',
-        source: 'Législation fédérale Einwegpfand obligatoire',
+        source: 'Mandatory German federal single-use container deposit (Einwegpfand)',
         accepted: true
       },
       fixedCostsMonthly: {
         value: 4500,
-        unit: 'EUR/mois',
+        unit: 'EUR/month',
         kind: 'ASSUMPTION',
-        source: 'Quote-part logistique Allemagne, service client DE et conformité légale',
+        source: 'Allocated German warehouse share, local DE customer support & compliance',
         accepted: true
       },
       prelaunchInvestment: {
         value: 35000,
         unit: 'EUR',
         kind: 'ASSUMPTION',
-        source: 'Packaging spécifique DPG Pfand, traductions DE et campagnes pré-lancement',
+        source: 'DPG Pfand certified packaging setup, DE localization & launch campaign',
         accepted: true
       },
       channels: {
         'DTC Online': {
           price: {
             value: 2.49,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'ASSUMPTION',
-            source: 'Enquête Van Westendorp DE - Prix acceptable optimal',
+            source: 'German Van Westendorp pricing study - Optimal acceptable price',
             accepted: true
           },
           retailerCut: {
             value: 0.0,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Modèle direct-to-consumer (pas de distributeur)',
+            source: 'Direct-to-consumer model (no retailer cut)',
             accepted: true
           },
           distributorCut: {
             value: 0.0,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Modèle direct-to-consumer',
+            source: 'Direct-to-consumer model',
             accepted: true
           },
           paymentFee: {
             value: 0.025,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Contrat Stripe / PayPal Europe 2.5%',
+            source: 'Stripe / PayPal Europe processing fee 2.5%',
             accepted: true
           },
           fulfillment: {
             value: 0.45,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'DATA',
-            source: '3PL logistique Cologne (pack 12 unitaire ramené à la canette)',
+            source: '3PL fulfillment warehouse Cologne (12-pack shipping fee per unit)',
             accepted: true
           },
           cogs: {
             value: 0.62,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'DATA',
-            source: 'Fiche de coût unitaire LUMEN (ingrédients adaptogènes + canette aluminium)',
+            source: 'LUMEN standard bill of materials (adaptogenic active formula + aluminum slim can)',
             accepted: true
           }
         },
         'Retail/Grocery': {
           price: {
             value: 2.19,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'ASSUMPTION',
-            source: 'Benchmark concurrentiel face aux energy drinks premium en Allemagne',
+            source: 'Competitive benchmark vs premium functional beverages in Germany',
             accepted: true
           },
           retailerCut: {
             value: 0.28,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Négociation cible enseignes bio / supermarchés premium 28%',
+            source: 'Target distributor terms for premium supermarket / organic channel (28%)',
             accepted: true
           },
           distributorCut: {
             value: 0.08,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Grossiste boissons DE (8% sur prix de cession grossiste)',
+            source: 'German beverage beverage wholesaler (8% wholesale margin)',
             accepted: true
           },
           paymentFee: {
             value: 0.005,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Frais bancaires virement B2B',
+            source: 'B2B wire transfer bank fees',
             accepted: true
           },
           fulfillment: {
             value: 0.15,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'DATA',
-            source: 'Transport palette vers entrepôt central distributeur',
+            source: 'Palletized freight shipping to central wholesaler hub',
             accepted: true
           },
           cogs: {
             value: 0.62,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'DATA',
-            source: 'Fiche de coût unitaire LUMEN',
+            source: 'LUMEN unit cost sheet',
             accepted: true
           }
         }
@@ -173,9 +172,9 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
   },
   {
     id: 'demo-retail',
-    name: 'Option B : Volume & Pénétration Retail',
+    name: 'Option B : Volume & Retail Penetration',
     revision: 'v1.0',
-    description: 'Stratégie de volume avec référencement agressif en supermarchés et pricing compétitif (2.09 €), absorption rapide des coûts fixes mais marge unitaire plus faible.',
+    description: 'Volume-driven strategy with aggressive supermarket placement, competitive pricing (€2.09), faster fixed cost absorption but lower unit margin.',
     country: 'DE',
     launchDate: '2026-07-01',
     horizonMonths: 12,
@@ -184,9 +183,9 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
     commercialA: {
       level: {
         value: 22000,
-        unit: 'canettes/mois',
+        unit: 'cans/month',
         kind: 'ASSUMPTION',
-        source: 'Hypothèse présence 250 points de vente Rewe/Edeka',
+        source: 'Targeting 250 Rewe / Edeka supermarket doors in urban clusters',
         accepted: true
       },
       mix: {
@@ -194,14 +193,14 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
           value: 0.25,
           unit: 'ratio',
           kind: 'ASSUMPTION',
-          source: 'Vente directe en support de notoriété',
+          source: 'Direct sales serving brand discovery & trial',
           accepted: true
         },
         'Retail/Grocery': {
           value: 0.75,
           unit: 'ratio',
           kind: 'ASSUMPTION',
-          source: 'Dominance retail physique',
+          source: 'Physical retail supermarket dominance',
           accepted: true
         }
       },
@@ -212,9 +211,9 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
       seasonProfile: [1.25, 1.30, 1.10, 0.95, 0.85, 0.80, 0.75, 0.85, 1.00, 1.10, 1.20, 1.25]
     },
     marketingBudgets: {
-      'Trade Marketing (Tête de gondole)': [5000, 4500, 3500, 2500, 2000, 2000, 1500, 1500, 2000, 2500, 3000, 3000],
-      'Digital & Influence Ciblée': [3000, 2500, 2000, 1500, 1200, 1000, 1000, 1000, 1200, 1500, 1800, 2000],
-      'Sampling en magasins': [4000, 3000, 2000, 1000, 800, 800, 600, 600, 1000, 1200, 1500, 1800]
+      'Trade Marketing (Endcaps/Displays)': [5000, 4500, 3500, 2500, 2000, 2000, 1500, 1500, 2000, 2500, 3000, 3000],
+      'Targeted Digital & Influence': [3000, 2500, 2000, 1500, 1200, 1000, 1000, 1000, 1200, 1500, 1800, 2000],
+      'In-Store Tasting & Sampling': [4000, 3000, 2000, 1000, 800, 800, 600, 600, 1000, 1200, 1500, 1800]
     },
     economics: {
       convention: 'gross_with_vat_and_deposit',
@@ -227,46 +226,46 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
       },
       depositPfand: {
         value: 0.25,
-        unit: 'EUR/canette',
+        unit: 'EUR/can',
         kind: 'DATA',
-        source: 'Einwegpfand 0.25€',
+        source: 'Einwegpfand €0.25',
         accepted: true
       },
       fixedCostsMonthly: {
         value: 5800,
-        unit: 'EUR/mois',
+        unit: 'EUR/month',
         kind: 'ASSUMPTION',
-        source: 'Gestion grands comptes GMS et audit logistique',
+        source: 'National account management (KAM) & logistics auditing',
         accepted: true
       },
       prelaunchInvestment: {
         value: 50000,
         unit: 'EUR',
         kind: 'ASSUMPTION',
-        source: 'Frais de référencement (listing fees) et stocks de consignation',
+        source: 'Listing slotting fees & consignment safety inventory',
         accepted: true
       },
       channels: {
         'DTC Online': {
           price: {
             value: 2.29,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'ASSUMPTION',
-            source: 'Alignement proche retail pour éviter le conflit de canal',
+            source: 'Narrow price differential to minimize channel conflict',
             accepted: true
           },
           retailerCut: {
             value: 0.0,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Vente directe',
+            source: 'Direct sales',
             accepted: true
           },
           distributorCut: {
             value: 0.0,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Vente directe',
+            source: 'Direct sales',
             accepted: true
           },
           paymentFee: {
@@ -278,39 +277,39 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
           },
           fulfillment: {
             value: 0.45,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'DATA',
             source: '3PL Cologne',
             accepted: true
           },
           cogs: {
             value: 0.60,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'DATA',
-            source: 'Économies d’échelle sur lots de production',
+            source: 'Volume procurement scale economies on ingredients',
             accepted: true
           }
         },
         'Retail/Grocery': {
           price: {
             value: 2.09,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'ASSUMPTION',
-            source: 'Prix de combat face aux sodas fonctionnels concurrents',
+            source: 'Competitive price point vs mass functional beverages',
             accepted: true
           },
           retailerCut: {
             value: 0.32,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Marge distributeur négociée avec centrale d’achat 32%',
+            source: 'Negotiated supermarket central purchasing margin 32%',
             accepted: true
           },
           distributorCut: {
             value: 0.08,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Grossiste logistique 8%',
+            source: 'Wholesaler logistics 8%',
             accepted: true
           },
           paymentFee: {
@@ -322,16 +321,16 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
           },
           fulfillment: {
             value: 0.12,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'DATA',
-            source: 'Logistique palettes mutualisées',
+            source: 'Consolidated full pallet freight delivery',
             accepted: true
           },
           cogs: {
             value: 0.60,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'DATA',
-            source: 'COGS optimisé volume',
+            source: 'Volume-optimized COGS',
             accepted: true
           }
         }
@@ -342,9 +341,9 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
   },
   {
     id: 'demo-premium',
-    name: 'Option C : Niche Premium & Santé',
+    name: 'Option C : Premium Niche & Wellness',
     revision: 'v1.0',
-    description: 'Positionnement résolument haut de gamme (2.79 €) ciblant les salles de sport boutique, studios de yoga et épiceries fines, avec une marge unitaire maximale.',
+    description: 'High-end positioning (€2.79) targeting boutique gyms, yoga studios, and organic delis, maximizing unit margin.',
     country: 'DE',
     launchDate: '2026-07-01',
     horizonMonths: 12,
@@ -353,9 +352,9 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
     commercialA: {
       level: {
         value: 7500,
-        unit: 'canettes/mois',
+        unit: 'cans/month',
         kind: 'ASSUMPTION',
-        source: 'Hypothèse volume sélectif et exclusif',
+        source: 'Selective, boutique velocity assumption',
         accepted: true
       },
       mix: {
@@ -363,14 +362,14 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
           value: 0.50,
           unit: 'ratio',
           kind: 'ASSUMPTION',
-          source: 'Abonnements récurrents DTC',
+          source: 'Direct subscriber recurring orders',
           accepted: true
         },
         'Retail/Grocery': {
           value: 0.50,
           unit: 'ratio',
           kind: 'ASSUMPTION',
-          source: 'Canal spécialisé fitness / épicerie bio',
+          source: 'Specialty fitness, spa & organic deli doors',
           accepted: true
         }
       },
@@ -381,9 +380,9 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
       seasonProfile: [1.20, 1.25, 1.10, 0.95, 0.85, 0.80, 0.75, 0.85, 1.00, 1.10, 1.20, 1.25]
     },
     marketingBudgets: {
-      'Partenariats Coachs & Studios': [3000, 2500, 2000, 1500, 1200, 1000, 1000, 1000, 1200, 1500, 1800, 2000],
-      'Événements Hyrox & Bien-être': [3500, 2500, 1500, 800, 600, 600, 500, 500, 800, 1200, 1500, 2000],
-      'Brand Content & Presse': [2000, 1500, 1000, 800, 600, 600, 500, 500, 600, 800, 1000, 1200]
+      'Coach & Studio Partnerships': [3000, 2500, 2000, 1500, 1200, 1000, 1000, 1000, 1200, 1500, 1800, 2000],
+      'Hyrox & Wellness Events': [3500, 2500, 1500, 800, 600, 600, 500, 500, 800, 1200, 1500, 2000],
+      'Brand Content & Press': [2000, 1500, 1000, 800, 600, 600, 500, 500, 600, 800, 1000, 1200]
     },
     economics: {
       convention: 'gross_with_vat_and_deposit',
@@ -396,46 +395,46 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
       },
       depositPfand: {
         value: 0.25,
-        unit: 'EUR/canette',
+        unit: 'EUR/can',
         kind: 'DATA',
-        source: 'Einwegpfand 0.25€',
+        source: 'Einwegpfand €0.25',
         accepted: true
       },
       fixedCostsMonthly: {
         value: 3800,
-        unit: 'EUR/mois',
+        unit: 'EUR/month',
         kind: 'ASSUMPTION',
-        source: 'Structure légère et ciblée',
+        source: 'Lean, focused regional team setup',
         accepted: true
       },
       prelaunchInvestment: {
         value: 28000,
         unit: 'EUR',
         kind: 'ASSUMPTION',
-        source: 'Packaging premium texturé et relations presse',
+        source: 'Tactile matte cans, PR gift boxes and sampling seeding',
         accepted: true
       },
       channels: {
         'DTC Online': {
           price: {
             value: 2.79,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'ASSUMPTION',
-            source: 'Plafond d’acceptabilité Van Westendorp pour profil bio/santé',
+            source: 'Upper threshold in Van Westendorp survey for organic/clean profile',
             accepted: true
           },
           retailerCut: {
             value: 0.0,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Vente directe',
+            source: 'Direct sales',
             accepted: true
           },
           distributorCut: {
             value: 0.0,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Vente directe',
+            source: 'Direct sales',
             accepted: true
           },
           paymentFee: {
@@ -447,39 +446,39 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
           },
           fulfillment: {
             value: 0.45,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'DATA',
             source: '3PL Cologne',
             accepted: true
           },
           cogs: {
             value: 0.65,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'DATA',
-            source: 'Certification biologique et canette imprimée mate',
+            source: 'Organic bio-certification & premium textured matte print',
             accepted: true
           }
         },
         'Retail/Grocery': {
           price: {
             value: 2.59,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'ASSUMPTION',
-            source: 'Prix de vente sélectif en boutique bio et fitness',
+            source: 'Selective price point in fitness studios & organic grocers',
             accepted: true
           },
           retailerCut: {
             value: 0.30,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Marge boutique spécialisée 30%',
+            source: 'Specialty retailer margin 30%',
             accepted: true
           },
           distributorCut: {
             value: 0.07,
             unit: 'ratio',
             kind: 'DATA',
-            source: 'Grossiste bio 7%',
+            source: 'Organic specialist wholesaler 7%',
             accepted: true
           },
           paymentFee: {
@@ -491,16 +490,16 @@ export const DEFAULT_SCENARIOS: Scenario[] = [
           },
           fulfillment: {
             value: 0.18,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'DATA',
-            source: 'Livraisons urbaines ciblées',
+            source: 'Direct urban store deliveries',
             accepted: true
           },
           cogs: {
             value: 0.65,
-            unit: 'EUR/canette',
+            unit: 'EUR/can',
             kind: 'DATA',
-            source: 'COGS premium',
+            source: 'Premium COGS',
             accepted: true
           }
         }

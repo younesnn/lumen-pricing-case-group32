@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { EVIDENCE_CATALOG, EvidenceItem } from '../data/evidenceCatalog';
-import { Database, Filter, AlertTriangle, FileText, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { Filter, FileText, ShieldAlert } from 'lucide-react';
 
 export const EvidenceView: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [activeExhibit, setActiveExhibit] = useState<EvidenceItem | null>(null);
 
-  const categories = ['all', 'Marché', 'Prix & Concurrence', 'Consommateurs & Enquêtes', 'Historique & Ventes', 'Économie & Coûts', 'Saisonnalité'];
+  const categories = ['all', 'Market', 'Pricing & Competition', 'Consumer & Surveys', 'Historical Sales', 'Economics & Costs', 'Seasonality'];
 
   const filtered = selectedCategory === 'all'
     ? EVIDENCE_CATALOG
@@ -14,12 +14,12 @@ export const EvidenceView: React.FC = () => {
 
   const statusBadge = (status: EvidenceItem['status']) => {
     switch (status) {
-      case 'DATA_DISPONIBLE':
-        return <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-3xs font-semibold">Data Disponible</span>;
-      case 'ANALYSE_QUALIFIEE':
-        return <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-3xs font-semibold">Analyse Qualifiée</span>;
-      case 'TRANSFERT_HYPOTHETIQUE':
-        return <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-3xs font-semibold">Transfert Hypothétique</span>;
+      case 'DATA_AVAILABLE':
+        return <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-3xs font-semibold">Available Data</span>;
+      case 'QUALIFIED_ANALYSIS':
+        return <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-3xs font-semibold">Qualified Analysis</span>;
+      case 'HYPOTHETICAL_TRANSFER':
+        return <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-3xs font-semibold">Hypothetical Transfer</span>;
     }
   };
 
@@ -29,19 +29,19 @@ export const EvidenceView: React.FC = () => {
       <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-xs space-y-1.5">
         <div className="flex items-center gap-2 text-amber-900 font-semibold">
           <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0" />
-          <span>Contrainte Méthodologique Majeure de la Data Room</span>
+          <span>Major Data Room Methodological Constraint</span>
         </div>
         <p className="text-amber-800 text-2xs leading-relaxed">
-          Il n’existe <strong>aucun historique de ventes en Allemagne</strong> car LUMEN n’y a jamais commercialisé ses produits. Toutes les données historiques (Exhibit 6) proviennent des Pays-Bas (NL), du Danemark (DK) et de la Suède (SE). Les données spécifiquement allemandes disponibles sont des enquêtes (Exhibits 4, 10, 11), des benchmarks concurrents (Exhibits 2, 3) et des indices météo (Exhibit 12).
+          There are <strong>no historical sales in Germany</strong> because LUMEN has never commercialized its products there. All longitudinal sales history (Exhibit 6) stems from the Netherlands (NL), Denmark (DK), and Sweden (SE). The German-specific data available comprises consumer surveys (Exhibits 4, 10, 11), competitor pricing audits (Exhibits 2, 3), and climatic indexes (Exhibit 12).
         </p>
       </div>
 
       {/* Header & Filter Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
-          <h2 className="text-lg font-bold text-slate-900">Catalogue des Données & Preuves (F01–F02)</h2>
+          <h2 className="text-lg font-bold text-slate-900">Data & Evidence Room Catalog (F01–F02)</h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            12 exhibits audités pour fonder les hypothèses du simulateur allemand.
+            12 audited exhibits establishing empirical grounding for the German market simulation.
           </p>
         </div>
 
@@ -49,7 +49,7 @@ export const EvidenceView: React.FC = () => {
         <div className="flex flex-wrap items-center gap-1.5 text-xs">
           <span className="text-slate-400 text-2xs mr-1 flex items-center gap-1">
             <Filter className="w-3 h-3" />
-            Filtre :
+            Filter:
           </span>
           {categories.map(cat => (
             <button
@@ -61,7 +61,7 @@ export const EvidenceView: React.FC = () => {
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
-              {cat === 'all' ? 'Toutes' : cat}
+              {cat === 'all' ? 'All' : cat}
             </button>
           ))}
         </div>
@@ -93,7 +93,7 @@ export const EvidenceView: React.FC = () => {
 
               <div className="space-y-1 pt-1">
                 <span className="text-3xs font-semibold uppercase tracking-wider text-slate-400 block">
-                  Enseignements clés :
+                  Key Insights:
                 </span>
                 <ul className="text-2xs text-slate-700 space-y-1 list-disc pl-4">
                   {item.keyInsights.slice(0, 2).map((ins, i) => (
@@ -104,9 +104,9 @@ export const EvidenceView: React.FC = () => {
             </div>
 
             <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-2xs">
-              <span className="text-slate-400">Origine : {item.category}</span>
+              <span className="text-slate-400">Category: {item.category}</span>
               <span className="text-emerald-700 font-semibold hover:underline">
-                Consulter la fiche →
+                View Exhibit Sheet →
               </span>
             </div>
           </div>
@@ -131,7 +131,7 @@ export const EvidenceView: React.FC = () => {
                 onClick={() => setActiveExhibit(null)}
                 className="p-1 rounded-md text-slate-400 hover:text-slate-800 text-xs font-semibold"
               >
-                Fermer ✕
+                Close ✕
               </button>
             </div>
 
@@ -146,7 +146,7 @@ export const EvidenceView: React.FC = () => {
               {activeExhibit.metricsSample && (
                 <div className="p-3 bg-white border border-slate-200 rounded-lg space-y-2">
                   <span className="text-3xs font-bold uppercase tracking-wider text-slate-500 block">
-                    Échantillon d'Indicateurs Mesurés
+                    Sample Audited Metrics
                   </span>
                   <div className="grid grid-cols-2 gap-2 text-2xs">
                     {Object.entries(activeExhibit.metricsSample).map(([k, v]) => (
@@ -161,7 +161,7 @@ export const EvidenceView: React.FC = () => {
 
               <div className="space-y-1.5">
                 <span className="text-2xs font-bold text-slate-800 uppercase tracking-wider">
-                  Enseignements Stratégiques Complets
+                  Complete Strategic Findings
                 </span>
                 <ul className="list-disc pl-5 space-y-1.5 text-slate-700 leading-relaxed text-2xs">
                   {activeExhibit.keyInsights.map((ins, i) => (
@@ -171,7 +171,7 @@ export const EvidenceView: React.FC = () => {
               </div>
 
               <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-2xs text-rose-900 leading-normal">
-                <strong>Limite & Précaution :</strong> {activeExhibit.caveats}
+                <strong>Limitations & Cautionary Caveat:</strong> {activeExhibit.caveats}
               </div>
             </div>
 
@@ -180,7 +180,7 @@ export const EvidenceView: React.FC = () => {
                 onClick={() => setActiveExhibit(null)}
                 className="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold"
               >
-                Fermer
+                Close
               </button>
             </div>
           </div>

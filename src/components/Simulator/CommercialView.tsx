@@ -1,6 +1,6 @@
 import React from 'react';
 import { EvaluationResult, Scenario } from '../../types/simulator';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, AreaChart, Area } from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 import { ShoppingBag, TrendingUp, Package, Calendar } from 'lucide-react';
 
 interface CommercialViewProps {
@@ -41,45 +41,45 @@ export const CommercialView: React.FC<CommercialViewProps> = ({
         <div className="p-3.5 bg-white border border-slate-200 rounded-xl shadow-xs">
           <div className="flex items-center gap-1.5 text-slate-500 text-2xs font-medium uppercase tracking-wider mb-1">
             <Package className="w-3.5 h-3.5 text-emerald-700" />
-            <span>Volume Total ({horizon}m)</span>
+            <span>Total Volume ({horizon}m)</span>
           </div>
           <div className="text-xl font-bold text-slate-900">
-            {currentCheckpoint.volumeTotal.toLocaleString('fr-FR')}
+            {currentCheckpoint.volumeTotal.toLocaleString('en-US')}
           </div>
-          <p className="text-3xs text-slate-500 mt-0.5">Canettes écoulées cumulées</p>
+          <p className="text-3xs text-slate-500 mt-0.5">Cumulative sold cans</p>
         </div>
 
         <div className="p-3.5 bg-white border border-slate-200 rounded-xl shadow-xs">
           <div className="flex items-center gap-1.5 text-slate-500 text-2xs font-medium uppercase tracking-wider mb-1">
             <ShoppingBag className="w-3.5 h-3.5 text-blue-600" />
-            <span>Volume DTC Web</span>
+            <span>DTC Online Volume</span>
           </div>
           <div className="text-xl font-bold text-blue-700">
-            {totalDTC.toLocaleString('fr-FR')}
+            {totalDTC.toLocaleString('en-US')}
           </div>
-          <p className="text-3xs text-slate-500 mt-0.5">{dtcShare.toFixed(1)}% du mix total</p>
+          <p className="text-3xs text-slate-500 mt-0.5">{dtcShare.toFixed(1)}% of total channel mix</p>
         </div>
 
         <div className="p-3.5 bg-white border border-slate-200 rounded-xl shadow-xs">
           <div className="flex items-center gap-1.5 text-slate-500 text-2xs font-medium uppercase tracking-wider mb-1">
             <TrendingUp className="w-3.5 h-3.5 text-purple-600" />
-            <span>Volume Retail</span>
+            <span>Retail / Grocery Volume</span>
           </div>
           <div className="text-xl font-bold text-purple-700">
-            {totalRetail.toLocaleString('fr-FR')}
+            {totalRetail.toLocaleString('en-US')}
           </div>
-          <p className="text-3xs text-slate-500 mt-0.5">{(100 - dtcShare).toFixed(1)}% du mix total</p>
+          <p className="text-3xs text-slate-500 mt-0.5">{(100 - dtcShare).toFixed(1)}% of total channel mix</p>
         </div>
 
         <div className="p-3.5 bg-white border border-slate-200 rounded-xl shadow-xs">
           <div className="flex items-center gap-1.5 text-slate-500 text-2xs font-medium uppercase tracking-wider mb-1">
             <Calendar className="w-3.5 h-3.5 text-amber-600" />
-            <span>Rythme Moyen</span>
+            <span>Monthly Run-rate</span>
           </div>
           <div className="text-xl font-bold text-slate-900">
-            {Math.round(currentCheckpoint.volumeTotal / horizon).toLocaleString('fr-FR')}
+            {Math.round(currentCheckpoint.volumeTotal / horizon).toLocaleString('en-US')}
           </div>
-          <p className="text-3xs text-slate-500 mt-0.5">Canettes par mois</p>
+          <p className="text-3xs text-slate-500 mt-0.5">Cans per month</p>
         </div>
       </div>
 
@@ -88,14 +88,14 @@ export const CommercialView: React.FC<CommercialViewProps> = ({
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-sm font-semibold text-slate-900">
-              Trajectoire des Ventes Mensuelles par Canal
+              Monthly Sales Trajectory by Channel
             </h3>
             <p className="text-2xs text-slate-500">
-              Volumes conditionnels (canettes) tenant compte de la montée en charge et de la saisonnalité estivale.
+              Conditional volume trajectory (cans) factoring ramp-up curves and summer beverage seasonality.
             </p>
           </div>
           <span className="text-2xs px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md font-medium">
-            Horizon {horizon} mois
+            Horizon: {horizon} months
           </span>
         </div>
 
@@ -107,7 +107,7 @@ export const CommercialView: React.FC<CommercialViewProps> = ({
               <YAxis tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} tickLine={false} />
               <Tooltip
                 contentStyle={{ backgroundColor: '#0f172a', borderRadius: '8px', color: '#fff', fontSize: '11px' }}
-                formatter={(value: any) => [`${Number(value).toLocaleString('fr-FR')} canettes`, '']}
+                formatter={(value: any) => [`${Number(value).toLocaleString('en-US')} cans`, '']}
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }} />
               <Bar dataKey="DTC" name="DTC Online" fill="#3b82f6" stackId="a" radius={[0, 0, 0, 0]} />
@@ -121,34 +121,34 @@ export const CommercialView: React.FC<CommercialViewProps> = ({
       <div className="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden">
         <div className="px-4 py-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
           <h4 className="text-xs font-semibold text-slate-900">
-            Détail Mensuel des Volumes (Canettes)
+            Monthly Volume Breakdown (Cans)
           </h4>
-          <span className="text-3xs text-slate-500 font-mono">12 périodes civiles</span>
+          <span className="text-3xs text-slate-500 font-mono">12 calendar periods</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50/50 text-slate-500 border-b border-slate-200 text-2xs uppercase">
               <tr>
-                <th className="py-2 px-3 font-semibold">Période</th>
+                <th className="py-2 px-3 font-semibold">Period</th>
                 <th className="py-2 px-3 font-semibold">Date</th>
                 <th className="py-2 px-3 font-semibold text-right">DTC Online</th>
                 <th className="py-2 px-3 font-semibold text-right">Retail/Grocery</th>
-                <th className="py-2 px-3 font-semibold text-right font-bold text-slate-800">Total Mois</th>
+                <th className="py-2 px-3 font-semibold text-right font-bold text-slate-800">Monthly Total</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {displayMonths.map(m => (
                 <tr key={m.month} className="hover:bg-slate-50/60 transition-colors">
-                  <td className="py-2 px-3 font-medium text-slate-900">Mois {m.month}</td>
+                  <td className="py-2 px-3 font-medium text-slate-900">Month {m.month}</td>
                   <td className="py-2 px-3 text-slate-500">{m.calendarDate}</td>
                   <td className="py-2 px-3 text-right font-mono text-blue-700">
-                    {(m.volumeByChannel['DTC Online'] || 0).toLocaleString('fr-FR')}
+                    {(m.volumeByChannel['DTC Online'] || 0).toLocaleString('en-US')}
                   </td>
                   <td className="py-2 px-3 text-right font-mono text-purple-700">
-                    {(m.volumeByChannel['Retail/Grocery'] || 0).toLocaleString('fr-FR')}
+                    {(m.volumeByChannel['Retail/Grocery'] || 0).toLocaleString('en-US')}
                   </td>
                   <td className="py-2 px-3 text-right font-mono font-bold text-slate-900">
-                    {m.volumeTotal.toLocaleString('fr-FR')}
+                    {m.volumeTotal.toLocaleString('en-US')}
                   </td>
                 </tr>
               ))}

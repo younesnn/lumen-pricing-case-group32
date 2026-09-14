@@ -103,7 +103,7 @@ export function App() {
   };
 
   const handleSaveDraft = () => {
-    alert(`Scénario "${activeScenario.name}" enregistré avec succès.`);
+    alert(`Scenario "${activeScenario.name}" saved successfully.`);
   };
 
   const handleDuplicate = (idToDuplicate?: string) => {
@@ -111,11 +111,11 @@ export function App() {
     const target = scenarios.find(s => s.id === targetId);
     if (!target) return;
 
-    const newId = `${target.id}-copie-${Date.now().toString().slice(-4)}`;
+    const newId = `${target.id}-copy-${Date.now().toString().slice(-4)}`;
     const duplicated: Scenario = {
       ...JSON.parse(JSON.stringify(target)),
       id: newId,
-      name: `${target.name} (Copie)`,
+      name: `${target.name} (Copy)`,
       revision: 'rev-1',
       status: 'draft',
       createdAt: new Date().toISOString(),
@@ -192,14 +192,14 @@ export function App() {
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
                   <span>
-                    <strong>Attention :</strong> Des paramètres ont été modifiés. Les résultats affichés ci-dessous sont obsolètes par rapport aux nouvelles hypothèses.
+                    <strong>Notice:</strong> Parameters were modified. Displayed metrics below are outdated relative to the revised inputs.
                   </span>
                 </div>
                 <button
                   onClick={handleCalculate}
                   className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-md shadow-xs transition-colors shrink-0"
                 >
-                  Recalculer maintenant
+                  Recalculate now
                 </button>
               </div>
             )}
@@ -230,7 +230,7 @@ export function App() {
                     }`}
                   >
                     <DollarSign className="w-3.5 h-3.5" />
-                    <span>Vue Économique (MD-05/06)</span>
+                    <span>Unit Economics (MD-05/06)</span>
                   </button>
 
                   <button
@@ -242,7 +242,7 @@ export function App() {
                     }`}
                   >
                     <TrendingUp className="w-3.5 h-3.5" />
-                    <span>Vue Commerciale (Volume)</span>
+                    <span>Commercial Trajectory (Volume)</span>
                   </button>
 
                   <button
@@ -254,7 +254,7 @@ export function App() {
                     }`}
                   >
                     <Sliders className="w-3.5 h-3.5" />
-                    <span>Sensibilité (F06–F07)</span>
+                    <span>Sensitivity & Stress (F06–F07)</span>
                   </button>
 
                   <button
@@ -266,7 +266,7 @@ export function App() {
                     }`}
                   >
                     <BookOpen className="w-3.5 h-3.5" />
-                    <span>Audit & Formules (F04)</span>
+                    <span>Audit & Formulas (F04)</span>
                   </button>
                 </div>
 

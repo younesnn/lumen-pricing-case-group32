@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, HelpCircle, Layers, DollarSign, Calendar, TrendingUp, Megaphone, Check } from 'lucide-react';
+import { ChevronDown, ChevronRight, HelpCircle, Layers, DollarSign, Calendar, TrendingUp, Megaphone } from 'lucide-react';
 import { Scenario, ValueKind, ChannelTerms } from '../../types/simulator';
 
 interface ParametersPanelProps {
@@ -45,7 +45,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
         type="button"
         onClick={() => onInspectVariable?.(label, kind, source, val, unit)}
         className={`inline-flex items-center gap-1 text-3xs font-semibold px-1.5 py-0.5 rounded-sm border cursor-pointer transition-all hover:scale-105 ${colorMap[kind]}`}
-        title={`Origine: ${kind} — Cliquer pour inspecter`}
+        title={`Provenance: ${kind} — Click to inspect origin`}
       >
         <span>{kind}</span>
         <HelpCircle className="w-2.5 h-2.5 opacity-60" />
@@ -59,13 +59,13 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
         <div className="flex items-center gap-2">
           <Layers className="w-4 h-4 text-slate-700" />
           <h2 className="font-semibold text-slate-900 text-xs uppercase tracking-wider">
-            Paramètres & Hypothèses
+            Parameters & Assumptions
           </h2>
         </div>
-        <span className="text-2xs text-slate-500 font-medium">Modifiables</span>
+        <span className="text-2xs text-slate-500 font-medium">Editable</span>
       </div>
 
-      {/* 1. Stratégie & Calendrier */}
+      {/* 1. Strategy & Calendar */}
       <div>
         <button
           onClick={() => toggleSection('strategy')}
@@ -73,7 +73,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
         >
           <div className="flex items-center gap-2">
             <Calendar className="w-3.5 h-3.5 text-emerald-700" />
-            <span>1. Stratégie & Calendrier de Lancement</span>
+            <span>1. Strategy & Launch Calendar</span>
           </div>
           {openSections.strategy ? <ChevronDown className="w-3.5 h-3.5 text-slate-400" /> : <ChevronRight className="w-3.5 h-3.5 text-slate-400" />}
         </button>
@@ -82,7 +82,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
           <div className="p-3.5 pt-1 space-y-3 bg-white">
             <div>
               <label className="block text-2xs font-semibold text-slate-600 mb-1">
-                Nom de l'option stratégique
+                Strategic Option Name
               </label>
               <input
                 type="text"
@@ -95,15 +95,15 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="block text-2xs font-semibold text-slate-600 mb-1">
-                  Pays cible
+                  Target Geography
                 </label>
                 <div className="px-2.5 py-1.5 bg-slate-100 border border-slate-200 rounded-md font-medium text-slate-700">
-                  DE (Allemagne)
+                  DE (Germany)
                 </div>
               </div>
               <div>
                 <label className="block text-2xs font-semibold text-slate-600 mb-1">
-                  Date de lancement
+                  Launch Date
                 </label>
                 <input
                   type="date"
@@ -116,7 +116,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
 
             <div>
               <label className="block text-2xs font-semibold text-slate-600 mb-1">
-                Description & Justification du positionnement
+                Description & Positioning Thesis
               </label>
               <textarea
                 rows={2}
@@ -129,7 +129,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
         )}
       </div>
 
-      {/* 2. Mode Commercial (A vs B) */}
+      {/* 2. Commercial Trajectory (Mode A vs B) */}
       <div>
         <button
           onClick={() => toggleSection('commercial')}
@@ -137,7 +137,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
         >
           <div className="flex items-center gap-2">
             <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
-            <span>2. Mode Commercial (Demande & Volume)</span>
+            <span>2. Commercial Demand & Volume Mode</span>
           </div>
           {openSections.commercial ? <ChevronDown className="w-3.5 h-3.5 text-slate-400" /> : <ChevronRight className="w-3.5 h-3.5 text-slate-400" />}
         </button>
@@ -155,7 +155,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Mode A : Demande totale sous hypothèses
+                Mode A: Total Demand & Assumed Ramp
               </button>
               <button
                 type="button"
@@ -166,7 +166,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Mode B : Base organique + Acquisition
+                Mode B: Organic Baseline + Paid Funnel
               </button>
             </div>
 
@@ -175,14 +175,14 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="text-2xs font-semibold text-slate-700">
-                      Niveau mensuel à maturité
+                      Monthly Mature Target Volume
                     </label>
                     {renderBadge(
                       scenario.commercialA.level.kind,
                       scenario.commercialA.level.source,
-                      'Niveau mensuel à maturité',
+                      'Monthly Mature Target Volume',
                       scenario.commercialA.level.value,
-                      'canettes/mois'
+                      'cans/month'
                     )}
                   </div>
                   <div className="flex items-center gap-2">
@@ -199,7 +199,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                       })}
                       className="w-full px-2.5 py-1.5 border border-slate-300 rounded-md text-xs font-semibold text-slate-900"
                     />
-                    <span className="text-2xs text-slate-500 shrink-0 font-medium">canettes/mois</span>
+                    <span className="text-2xs text-slate-500 shrink-0 font-medium">cans/month</span>
                   </div>
                 </div>
 
@@ -207,10 +207,10 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="text-2xs font-semibold text-slate-700">
-                      Répartition Mix Canaux
+                      Channel Sales Allocation
                     </label>
                     <span className="text-3xs text-emerald-700 font-bold">
-                      Somme : {Math.round((Object.values(scenario.commercialA.mix) as Array<{ value: number }>).reduce((a, b) => a + (b?.value ?? 0), 0) * 100)}%
+                      Sum: {Math.round((Object.values(scenario.commercialA.mix) as Array<{ value: number }>).reduce((a, b) => a + (b?.value ?? 0), 0) * 100)}%
                     </span>
                   </div>
 
@@ -247,7 +247,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
               <div className="space-y-2.5 pt-1">
                 <div>
                   <label className="block text-2xs font-semibold text-slate-700 mb-1">
-                    Base organique mensuelle (hors paid)
+                    Monthly Organic Baseline (excluding paid)
                   </label>
                   <div className="flex items-center gap-2">
                     <input
@@ -263,9 +263,9 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                             d.commercialB = {
                               organicBaseMonthly: {
                                 value: val,
-                                unit: 'canettes/mois',
+                                unit: 'cans/month',
                                 kind: 'ASSUMPTION',
-                                source: 'Base organique mensuelle estimée',
+                                source: 'Estimated monthly organic baseline',
                                 accepted: true
                               },
                               marketingChannels: {},
@@ -281,11 +281,11 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                       }}
                       className="w-full px-2.5 py-1.5 border border-slate-300 rounded-md text-xs font-semibold"
                     />
-                    <span className="text-2xs text-slate-500 shrink-0">canettes/mois</span>
+                    <span className="text-2xs text-slate-500 shrink-0">cans/month</span>
                   </div>
                 </div>
                 <div className="p-2 bg-blue-50 text-blue-800 rounded text-2xs">
-                  En Mode B, les volumes dépendent directement du budget marketing divisé par le CAC avec facteur d'incrémentalité.
+                  In Mode B, incremental volume is calculated directly from marketing spend divided by channel CAC with an incrementality factor.
                 </div>
               </div>
             )}
@@ -293,7 +293,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
         )}
       </div>
 
-      {/* 3. Prix & Économie unitaire par canal */}
+      {/* 3. Pricing & Channel Terms */}
       <div>
         <button
           onClick={() => toggleSection('pricing')}
@@ -301,7 +301,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
         >
           <div className="flex items-center gap-2">
             <DollarSign className="w-3.5 h-3.5 text-emerald-600" />
-            <span>3. Prix de Vente & Conditions par Canal</span>
+            <span>3. Retail Pricing & Channel Terms</span>
           </div>
           {openSections.pricing ? <ChevronDown className="w-3.5 h-3.5 text-slate-400" /> : <ChevronRight className="w-3.5 h-3.5 text-slate-400" />}
         </button>
@@ -312,13 +312,13 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
               <div key={chName} className="p-2.5 bg-slate-50/80 rounded-lg border border-slate-200 space-y-2">
                 <div className="flex items-center justify-between border-b border-slate-200 pb-1.5">
                   <span className="font-semibold text-slate-900 text-xs">{chName}</span>
-                  {renderBadge(terms.price.kind, terms.price.source, `Prix ${chName}`, terms.price.value, 'EUR/canette')}
+                  {renderBadge(terms.price.kind, terms.price.source, `Price ${chName}`, terms.price.value, 'EUR/can')}
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="block text-3xs font-medium text-slate-500 mb-0.5">
-                      Prix brut consommateur (TTC)
+                      Gross Shelf Price (incl. VAT)
                     </label>
                     <div className="flex items-center gap-1">
                       <input
@@ -339,7 +339,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
 
                   <div>
                     <label className="block text-3xs font-medium text-slate-500 mb-0.5">
-                      COGS unitaire (can + liquide)
+                      Unit COGS (Can + Formula)
                     </label>
                     <div className="flex items-center gap-1">
                       <input
@@ -361,7 +361,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
 
                 <div className="grid grid-cols-3 gap-1.5 pt-1 text-3xs text-slate-600">
                   <div>
-                    <span className="block text-slate-400">Marge distributeur :</span>
+                    <span className="block text-slate-400">Retailer Margin:</span>
                     <input
                       type="number"
                       step={1}
@@ -377,7 +377,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                   </div>
 
                   <div>
-                    <span className="block text-slate-400">Frais de port/3PL :</span>
+                    <span className="block text-slate-400">Fulfillment/3PL:</span>
                     <input
                       type="number"
                       step={0.05}
@@ -389,11 +389,11 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                       })}
                       className="w-full px-1.5 py-0.5 border border-slate-300 rounded text-center text-2xs font-semibold"
                     />
-                    <span className="text-center block text-slate-400">€/u</span>
+                    <span className="text-center block text-slate-400">€/can</span>
                   </div>
 
                   <div>
-                    <span className="block text-slate-400">Frais paiement :</span>
+                    <span className="block text-slate-400">Payment Processing:</span>
                     <input
                       type="number"
                       step={0.1}
@@ -414,7 +414,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
         )}
       </div>
 
-      {/* 4. Conventions Fiscales & Coûts Fixes */}
+      {/* 4. Tax Conventions & Fixed Costs */}
       <div>
         <button
           onClick={() => toggleSection('economics')}
@@ -422,7 +422,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
         >
           <div className="flex items-center gap-2">
             <DollarSign className="w-3.5 h-3.5 text-amber-600" />
-            <span>4. Coûts Fixes & Conventions Légales DE</span>
+            <span>4. Fixed Costs & German Legal Conventions</span>
           </div>
           {openSections.economics ? <ChevronDown className="w-3.5 h-3.5 text-slate-400" /> : <ChevronRight className="w-3.5 h-3.5 text-slate-400" />}
         </button>
@@ -432,19 +432,19 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="block text-3xs font-medium text-slate-600 mb-0.5">
-                  TVA Allemagne (MwSt)
+                  German VAT (MwSt)
                 </label>
                 <div className="px-2 py-1 bg-slate-100 rounded text-xs font-semibold text-slate-800 border border-slate-200">
-                  19.0% (Légal DE)
+                  19.0% (Statutory DE)
                 </div>
               </div>
 
               <div>
                 <label className="block text-3xs font-medium text-slate-600 mb-0.5">
-                  Consigne DPG (Pfand)
+                  DPG Deposit (Pfand)
                 </label>
                 <div className="px-2 py-1 bg-slate-100 rounded text-xs font-semibold text-slate-800 border border-slate-200">
-                  0.25 € / canette
+                  €0.25 / can
                 </div>
               </div>
             </div>
@@ -452,14 +452,14 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
             <div>
               <div className="flex items-center justify-between mb-0.5">
                 <label className="text-3xs font-medium text-slate-600">
-                  Coûts fixes mensuels affectés DE
+                  Monthly Allocated DE Fixed Overhead
                 </label>
                 {renderBadge(
                   scenario.economics.fixedCostsMonthly.kind,
                   scenario.economics.fixedCostsMonthly.source,
-                  'Coûts fixes mensuels',
+                  'Monthly Fixed Overhead',
                   scenario.economics.fixedCostsMonthly.value,
-                  'EUR/mois'
+                  'EUR/month'
                 )}
               </div>
               <div className="flex items-center gap-1.5">
@@ -474,19 +474,19 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                   })}
                   className="w-full px-2 py-1 border border-slate-300 rounded text-xs font-semibold text-slate-900"
                 />
-                <span className="text-2xs text-slate-500">€/mois</span>
+                <span className="text-2xs text-slate-500">€/month</span>
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-0.5">
                 <label className="text-3xs font-medium text-slate-600">
-                  Investissement initial de pré-lancement
+                  Upfront Pre-launch Investment
                 </label>
                 {renderBadge(
                   scenario.economics.prelaunchInvestment.kind,
                   scenario.economics.prelaunchInvestment.source,
-                  'Investissement pré-lancement',
+                  'Pre-launch Investment',
                   scenario.economics.prelaunchInvestment.value,
                   'EUR'
                 )}
@@ -510,7 +510,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
         )}
       </div>
 
-      {/* 5. Budgets Marketing */}
+      {/* 5. Marketing Budgets */}
       <div>
         <button
           onClick={() => toggleSection('marketing')}
@@ -518,7 +518,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
         >
           <div className="flex items-center gap-2">
             <Megaphone className="w-3.5 h-3.5 text-purple-600" />
-            <span>5. Budgets Marketing Mensuels</span>
+            <span>5. Monthly Marketing Budgets</span>
           </div>
           {openSections.marketing ? <ChevronDown className="w-3.5 h-3.5 text-slate-400" /> : <ChevronRight className="w-3.5 h-3.5 text-slate-400" />}
         </button>
@@ -526,7 +526,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
         {openSections.marketing && (
           <div className="p-3.5 pt-1 space-y-2 bg-white">
             <p className="text-3xs text-slate-500 leading-tight">
-              Budgets d'acquisition et de notoriété par poste (Mois 1 à 12).
+              Acquisition and awareness spending by program line (Months 1 to 12).
             </p>
             <div className="space-y-2 pt-1">
               {(Object.entries(scenario.marketingBudgets) as Array<[string, number[]]>).map(([channel, budgetArr]) => {
@@ -535,10 +535,10 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                   <div key={channel} className="p-2 bg-slate-50 rounded border border-slate-200">
                     <div className="flex items-center justify-between text-2xs font-medium text-slate-800 mb-1">
                       <span>{channel}</span>
-                      <span className="font-bold text-purple-700">{totalChannelSpend.toLocaleString('fr-FR')} €/an</span>
+                      <span className="font-bold text-purple-700">€{totalChannelSpend.toLocaleString('en-US')}/yr</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-3xs text-slate-500">M1 (Lancement) :</span>
+                      <span className="text-3xs text-slate-500">M1 (Launch Month):</span>
                       <input
                         type="number"
                         step={500}

@@ -1,10 +1,10 @@
 import { Scenario, EvaluationResult, MonthlyFinancial, HorizonCheckpoint, SensitivityVariant } from '../types/simulator';
 
 const MONTH_NAMES = [
-  'Mois 1 (Juil 2026)', 'Mois 2 (Août 2026)', 'Mois 3 (Sept 2026)',
-  'Mois 4 (Oct 2026)', 'Mois 5 (Nov 2026)', 'Mois 6 (Déc 2026)',
-  'Mois 7 (Jan 2027)', 'Mois 8 (Fév 2027)', 'Mois 9 (Mar 2027)',
-  'Mois 10 (Avr 2027)', 'Mois 11 (Mai 2027)', 'Mois 12 (Juin 2027)'
+  'Month 1 (Jul 2026)', 'Month 2 (Aug 2026)', 'Month 3 (Sep 2026)',
+  'Month 4 (Oct 2026)', 'Month 5 (Nov 2026)', 'Month 6 (Dec 2026)',
+  'Month 7 (Jan 2027)', 'Month 8 (Feb 2027)', 'Month 9 (Mar 2027)',
+  'Month 10 (Apr 2027)', 'Month 11 (May 2027)', 'Month 12 (Jun 2027)'
 ];
 
 const CALENDAR_DATES = [
@@ -228,9 +228,9 @@ export function evaluateScenario(scenario: Scenario): EvaluationResult {
   };
 
   const warnings: string[] = [
-    'Aucun historique de ventes LUMEN en Allemagne ; résultats sous hypothèses.',
-    'Transfert saisonnier issu des marchés scandinaves (NL/DK/SE) sans causalité prouvée sur le consommateur allemand.',
-    'Le seuil de rentabilité unitaire dépend de la stabilité des coûts matières et de la non-dégradation du mix canal.'
+    'No observed LUMEN sales history in Germany; all results are based on assumptions.',
+    'Seasonal transfer derived from Scandinavian markets (NL/DK/SE) with no proven causality for German consumers.',
+    'Unit breakeven threshold depends on raw material cost stability and channel mix preservation.'
   ];
 
   return {
@@ -279,8 +279,8 @@ export function computeSensitivityVariants(scenario: Scenario, baseEval: Evaluat
   return [
     {
       name: 'pessimistic',
-      label: 'Scénario Prudent',
-      description: 'Adoption lente (−20% volume) & surcoût d’acquisition (+15% CAC)',
+      label: 'Conservative Scenario',
+      description: 'Slow market adoption (−20% volume) & higher customer acquisition cost (+15% CAC)',
       deltaPercent: -20,
       annualVolume: pessVol,
       annualRevenue: pessRev,
@@ -290,8 +290,8 @@ export function computeSensitivityVariants(scenario: Scenario, baseEval: Evaluat
     },
     {
       name: 'central',
-      label: 'Scénario Central (Référence)',
-      description: 'Paramètres actuels du scénario évalué',
+      label: 'Central Scenario (Base)',
+      description: 'Current baseline configuration of evaluated scenario',
       deltaPercent: 0,
       annualVolume: centVol,
       annualRevenue: centRev,
@@ -301,8 +301,8 @@ export function computeSensitivityVariants(scenario: Scenario, baseEval: Evaluat
     },
     {
       name: 'optimistic',
-      label: 'Scénario Favorable',
-      description: 'Forte traction virale (+20% volume) & efficacité marketing (+10%)',
+      label: 'Favorable Scenario',
+      description: 'Strong organic traction (+20% volume) & marketing efficiency gain (+10%)',
       deltaPercent: 20,
       annualVolume: optVol,
       annualRevenue: optRev,

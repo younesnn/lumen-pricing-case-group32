@@ -1,7 +1,7 @@
 import React from 'react';
 import { EvaluationResult, Scenario, SensitivityVariant } from '../../types/simulator';
 import { computeSensitivityVariants } from '../../engine/calculator';
-import { ShieldCheck, ArrowUpRight, ArrowDownRight, Sliders, AlertTriangle } from 'lucide-react';
+import { Sliders, AlertTriangle } from 'lucide-react';
 
 interface SensitivityViewProps {
   scenario: Scenario;
@@ -15,39 +15,38 @@ export const SensitivityView: React.FC<SensitivityViewProps> = ({
   const variants: SensitivityVariant[] = computeSensitivityVariants(scenario, evaluation);
 
   // Tornado sensitivity variables
-  const baseProfit = evaluation.checkpoints.m12.operatingProfit;
   const baseVolume = evaluation.checkpoints.m12.volumeTotal;
   const netMarginPerCan = evaluation.weightedMarginPerCan;
 
   // Sensitivities on Annual Operating Profit
   const sensitivities = [
     {
-      variable: 'Volume de vente (+20% / −20%)',
+      variable: 'Sales Volume (+20% / −20%)',
       downDelta: Math.round(-0.20 * baseVolume * netMarginPerCan),
       upDelta: Math.round(0.20 * baseVolume * netMarginPerCan),
       unit: '€',
-      criticality: 'Élevée'
+      criticality: 'High'
     },
     {
-      variable: 'Prix de vente moyen (+10% / −10%)',
+      variable: 'Average Selling Price (+10% / −10%)',
       downDelta: Math.round(-0.10 * evaluation.checkpoints.m12.grossTurnover * 0.75),
       upDelta: Math.round(0.10 * evaluation.checkpoints.m12.grossTurnover * 0.75),
       unit: '€',
-      criticality: 'Très Élevée'
+      criticality: 'Very High'
     },
     {
-      variable: 'Coût matières COGS (+10% / −10%)',
+      variable: 'Raw Material COGS (+10% / −10%)',
       downDelta: Math.round(-0.10 * evaluation.checkpoints.m12.cogsTotal),
       upDelta: Math.round(0.10 * evaluation.checkpoints.m12.cogsTotal),
       unit: '€',
-      criticality: 'Moyenne'
+      criticality: 'Medium'
     },
     {
-      variable: 'Dépenses marketing acquisition (+20% / −20%)',
+      variable: 'Marketing Acquisition Budget (+20% / −20%)',
       downDelta: Math.round(-0.20 * evaluation.checkpoints.m12.marketingSpend),
       upDelta: Math.round(0.20 * evaluation.checkpoints.m12.marketingSpend),
       unit: '€',
-      criticality: 'Moyenne'
+      criticality: 'Medium'
     }
   ];
 
@@ -58,16 +57,16 @@ export const SensitivityView: React.FC<SensitivityViewProps> = ({
         <div className="flex items-center gap-2 mb-1">
           <Sliders className="w-4 h-4 text-emerald-700" />
           <h3 className="text-sm font-semibold text-slate-900">
-            Analyse de Sensibilité & Robustesse de la Décision
+            Sensitivity Analysis & Decision Stress-Testing
           </h3>
         </div>
         <p className="text-2xs text-slate-500 leading-relaxed">
-          Conformément au cadrage F06, les résultats ne sont pas qualifiés de probabilités statistiques.
-          Ils testent la résistance de l’option face à des chocs de volume, de prix ou de coûts d’acquisition.
+          In strict accordance with F06 standards, these results are not represented as statistical probabilities.
+          They rigorously stress-test the strategic option against downside volume shocks, price shifts, and customer acquisition cost escalations.
         </p>
       </div>
 
-      {/* 3 Scenarios: Prudent, Central, Favorable */}
+      {/* 3 Scenarios: Conservative, Central, Favorable */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {variants.map(v => {
           const isCentral = v.name === 'central';
@@ -91,7 +90,7 @@ export const SensitivityView: React.FC<SensitivityViewProps> = ({
                 <span className={`text-2xs font-semibold px-2 py-0.5 rounded-full ${
                   isCentral ? 'bg-slate-100 text-slate-700' : isPessimistic ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'
                 }`}>
-                  {v.deltaPercent === 0 ? 'Référence' : `${v.deltaPercent > 0 ? '+' : ''}${v.deltaPercent}%`}
+                  {v.deltaPercent === 0 ? 'Baseline' : `${v.deltaPercent > 0 ? '+' : ''}${v.deltaPercent}%`}
                 </span>
               </div>
 
@@ -101,27 +100,27 @@ export const SensitivityView: React.FC<SensitivityViewProps> = ({
 
               <div className="space-y-2 border-t border-slate-200/60 pt-2 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Volume Annuel :</span>
+                  <span className="text-slate-500">Annual Volume:</span>
                   <span className="font-semibold text-slate-900 font-mono">
-                    {v.annualVolume.toLocaleString('fr-FR')} u
+                    {v.annualVolume.toLocaleString('en-US')} cans
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Revenu Net :</span>
+                  <span className="text-slate-500">Net Revenue:</span>
                   <span className="font-semibold text-slate-900 font-mono">
-                    {Math.round(v.annualRevenue).toLocaleString('fr-FR')} €
+                    €{Math.round(v.annualRevenue).toLocaleString('en-US')}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Contribution Nette :</span>
+                  <span className="text-slate-500">Net Contribution:</span>
                   <span className="font-semibold text-slate-900 font-mono">
-                    {Math.round(v.annualContribution).toLocaleString('fr-FR')} €
+                    €{Math.round(v.annualContribution).toLocaleString('en-US')}
                   </span>
                 </div>
                 <div className="flex justify-between border-t border-slate-200 pt-1.5 font-bold">
-                  <span className="text-slate-700">Résultat Net :</span>
+                  <span className="text-slate-700">Operating Profit:</span>
                   <span className={`font-mono ${v.annualOperatingProfit >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
-                    {Math.round(v.annualOperatingProfit).toLocaleString('fr-FR')} €
+                    €{Math.round(v.annualOperatingProfit).toLocaleString('en-US')}
                   </span>
                 </div>
               </div>
@@ -133,10 +132,10 @@ export const SensitivityView: React.FC<SensitivityViewProps> = ({
       {/* Tornado / Sensitivity Impact Bars */}
       <div className="bg-white p-4 border border-slate-200 rounded-xl shadow-xs">
         <h4 className="text-xs font-semibold text-slate-900 mb-1">
-          Barres d'Impact sur le Résultat d'Exploitation Annuel
+          Sensitivity Impact Bars on Annual Operating Profit
         </h4>
         <p className="text-2xs text-slate-500 mb-4">
-          Variation absolue du résultat net (en €) en cas d'écart défavorable (rouge) ou favorable (vert).
+          Absolute impact on operating profit (in €) under unfavorable downside (red) vs favorable upside (green) variations.
         </p>
 
         <div className="space-y-4">
@@ -145,13 +144,13 @@ export const SensitivityView: React.FC<SensitivityViewProps> = ({
               <div className="flex justify-between text-xs font-medium">
                 <span className="text-slate-800">{s.variable}</span>
                 <span className="text-3xs px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
-                  Sensibilité {s.criticality}
+                  Sensitivity: {s.criticality}
                 </span>
               </div>
 
               <div className="flex items-center gap-2 text-2xs font-mono">
-                <span className="w-16 text-right text-rose-700 font-semibold">
-                  {s.downDelta.toLocaleString('fr-FR')} €
+                <span className="w-20 text-right text-rose-700 font-semibold">
+                  €{s.downDelta.toLocaleString('en-US')}
                 </span>
                 <div className="flex-1 h-3.5 bg-slate-100 rounded-sm flex overflow-hidden">
                   <div className="w-1/2 flex justify-end">
@@ -168,8 +167,8 @@ export const SensitivityView: React.FC<SensitivityViewProps> = ({
                     />
                   </div>
                 </div>
-                <span className="w-16 text-left text-emerald-700 font-semibold">
-                  +{s.upDelta.toLocaleString('fr-FR')} €
+                <span className="w-20 text-left text-emerald-700 font-semibold">
+                  +€{s.upDelta.toLocaleString('en-US')}
                 </span>
               </div>
             </div>
@@ -181,11 +180,11 @@ export const SensitivityView: React.FC<SensitivityViewProps> = ({
       <div className="p-4 bg-amber-50/60 border border-amber-200 rounded-xl text-xs space-y-2">
         <div className="flex items-center gap-2 text-amber-900 font-semibold">
           <AlertTriangle className="w-4 h-4 text-amber-600" />
-          <span>Point de Bascule Critique (Seuil de Défaillance)</span>
+          <span>Critical Breakeven Tipping Point</span>
         </div>
         <p className="text-amber-800 text-2xs leading-relaxed">
-          Le seuil de volume annuel nécessaire pour couvrir l'ensemble des charges fixes ({evaluation.checkpoints.m12.fixedCosts.toLocaleString('fr-FR')} €) et du marketing ({evaluation.checkpoints.m12.marketingSpend.toLocaleString('fr-FR')} €) s'établit à <strong>{evaluation.breakevenVolumeAnnual.toLocaleString('fr-FR')} canettes</strong>.
-          Si le volume réel tombe en-dessous de ce niveau, la stratégie entre en perte d'exploitation sans possibilité de récupération sur 12 mois.
+          The minimum annual unit sales threshold required to fully absorb fixed overhead (€{evaluation.checkpoints.m12.fixedCosts.toLocaleString('en-US')}) and marketing commitments (€{evaluation.checkpoints.m12.marketingSpend.toLocaleString('en-US')}) stands at <strong>{evaluation.breakevenVolumeAnnual.toLocaleString('en-US')} cans</strong>.
+          If actual sales volume settles below this threshold, the strategy incurs structural operating losses with zero cash recovery within 12 months.
         </p>
       </div>
     </div>

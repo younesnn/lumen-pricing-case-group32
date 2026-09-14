@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Scenario, EvaluationResult } from '../types/simulator';
-import { Sparkles, CheckCircle2, AlertTriangle, ShieldCheck, Printer, Download, Users, FileSignature } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, ShieldCheck, Printer, FileSignature } from 'lucide-react';
 
 interface DecisionViewProps {
   scenarios: Scenario[];
@@ -9,15 +9,14 @@ interface DecisionViewProps {
 }
 
 export const DecisionView: React.FC<DecisionViewProps> = ({
-  scenarios,
   evaluations,
   activeScenario
 }) => {
   const [signerName, setSignerName] = useState('Elena Vance & Jonas Richter');
-  const [signerRole, setSignerRole] = useState('Comité de Direction (CFO & CMO)');
+  const [signerRole, setSignerRole] = useState('Executive Committee (CFO & CMO)');
   const [decisionStatus, setDecisionStatus] = useState<'APPROVED' | 'CONDITIONAL' | 'REJECTED'>('APPROVED');
   const [decisionRationale, setDecisionRationale] = useState(
-    "Nous validons l'Option A (DTC Premium Focus) à 2.49 € TTC en phase 1. Cette option protège la marge brute unitaire (1.08 €/canette) et permet d'atteindre le point mort dès le mois 8 sans dilution de marque en grande distribution avant d'avoir prouvé l'attachement communautaire."
+    'We endorse Option A (DTC Premium Focus) at €2.49 gross shelf price in Phase 1. This option safeguards unit gross margin (€1.08/can) and achieves capital recovery within Month 8 without premature brand dilution across mass supermarket channels prior to community brand loyalty validation.'
   );
   const [isSigned, setIsSigned] = useState(false);
   const [signedDate, setSignedDate] = useState<string | null>(null);
@@ -28,7 +27,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
   const handleSign = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSigned(true);
-    setSignedDate(new Date().toLocaleString('fr-FR'));
+    setSignedDate(new Date().toLocaleString('en-US'));
   };
 
   const handlePrint = () => {
@@ -42,12 +41,12 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <span className="text-2xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-              Étape F08
+              Stage F08
             </span>
-            <h2 className="text-lg font-bold text-slate-900">Dossier d'Arbitrage & Signature Décisionnelle</h2>
+            <h2 className="text-lg font-bold text-slate-900">Decision Dossier & Governance Sign-off</h2>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            Synthèse exécutive formalisée pour le Board de LUMEN Beverage Co.
+            Executive strategic briefing prepared for the Board of LUMEN Beverage Co.
           </p>
         </div>
 
@@ -57,7 +56,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-medium text-xs shadow-xs transition-colors"
           >
             <Printer className="w-3.5 h-3.5" />
-            <span>Imprimer le Dossier</span>
+            <span>Print Dossier</span>
           </button>
         </div>
       </div>
@@ -66,9 +65,9 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
       <div className="bg-white border-2 border-emerald-600/30 rounded-2xl p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-2xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-            Recommandation Stratégique Retenue
+            Selected Strategic Recommendation
           </span>
-          <span className="text-2xs font-mono text-slate-400">Marché : Allemagne (DE)</span>
+          <span className="text-2xs font-mono text-slate-400">Target Market: Germany (DE)</span>
         </div>
 
         <div>
@@ -82,27 +81,27 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
         {kpi12 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-3xs font-semibold text-slate-500 uppercase">Volume Annuel Visé</span>
+              <span className="text-3xs font-semibold text-slate-500 uppercase">Target Annual Volume</span>
               <div className="text-base font-bold text-slate-900 font-mono mt-0.5">
-                {kpi12.volumeTotal.toLocaleString('fr-FR')} u
+                {kpi12.volumeTotal.toLocaleString('en-US')} cans
               </div>
             </div>
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-3xs font-semibold text-slate-500 uppercase">Revenu Net Retenu</span>
+              <span className="text-3xs font-semibold text-slate-500 uppercase">Net Recognized Revenue</span>
               <div className="text-base font-bold text-emerald-800 font-mono mt-0.5">
-                {Math.round(kpi12.netRevenue).toLocaleString('fr-FR')} €
+                €{Math.round(kpi12.netRevenue).toLocaleString('en-US')}
               </div>
             </div>
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-3xs font-semibold text-slate-500 uppercase">Contribution Nette</span>
+              <span className="text-3xs font-semibold text-slate-500 uppercase">Net Contribution</span>
               <div className="text-base font-bold text-emerald-800 font-mono mt-0.5">
-                {Math.round(kpi12.contributionAfterMarketing).toLocaleString('fr-FR')} €
+                €{Math.round(kpi12.contributionAfterMarketing).toLocaleString('en-US')}
               </div>
             </div>
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-3xs font-semibold text-slate-500 uppercase">Récupération Cash</span>
+              <span className="text-3xs font-semibold text-slate-500 uppercase">Capital Payback</span>
               <div className="text-base font-bold text-purple-700 font-mono mt-0.5">
-                {evalResult?.paybackCrossingMonth ? `Mois ${evalResult.paybackCrossingMonth}` : 'Non atteint'}
+                {evalResult?.paybackCrossingMonth ? `Month ${evalResult.paybackCrossingMonth}` : 'Not achieved'}
               </div>
             </div>
           </div>
@@ -116,11 +115,11 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
             <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-xs">F</div>
             <div>
               <div>Freya Lindqvist</div>
-              <div className="text-3xs font-normal text-slate-400">CEO & Fondatrice</div>
+              <div className="text-3xs font-normal text-slate-400">CEO & Founder</div>
             </div>
           </div>
           <p className="text-2xs text-slate-600 leading-relaxed">
-            « Préserver l'aura premium et l'ADN nootropique de LUMEN. Éviter le piège du discount qui détruirait notre valorisation de marque en Europe. »
+            &ldquo;Safeguard LUMEN&apos;s premium aura and science-backed nootropic positioning. Avoid the mass discount trap that would erode our brand equity across Europe.&rdquo;
           </p>
         </div>
 
@@ -129,11 +128,11 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
             <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs">J</div>
             <div>
               <div>Jonas Richter</div>
-              <div className="text-3xs font-normal text-slate-400">CFO & Trésorier</div>
+              <div className="text-3xs font-normal text-slate-400">CFO & Treasurer</div>
             </div>
           </div>
           <p className="text-2xs text-slate-600 leading-relaxed">
-            « Exigence stricte d'un retour sur trésorerie inférieur à 10 mois. Aucun contrat d'engagement retail avec pénalités de rupture sans test préalable. »
+            &ldquo;Strict requirement for cash payback within 10 months. Zero long-term retail listing commitments with slotting fees or out-of-stock penalties without pilot proof.&rdquo;
           </p>
         </div>
 
@@ -146,7 +145,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
             </div>
           </div>
           <p className="text-2xs text-slate-600 leading-relaxed">
-            « Concentrer le budget d'acquisition sur Berlin et Munich avec des créateurs tech/focus pour tester le CAC réel avant d'arroser l'Allemagne entière. »
+            &ldquo;Concentrate acquisition spend on Berlin and Munich with tech/founder creators to validate empirical blended CAC before scaling national media spend.&rdquo;
           </p>
         </div>
       </div>
@@ -156,24 +155,24 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
         <div className="p-4 bg-white border border-slate-200 rounded-xl shadow-xs space-y-2">
           <h4 className="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
             <AlertTriangle className="w-4 h-4 text-amber-600" />
-            <span>Sacrifices Assumés (Arbitrages Délibérés)</span>
+            <span>Deliberate Sacrifices & Trade-offs</span>
           </h4>
           <ul className="text-2xs text-slate-600 space-y-1.5 list-disc pl-4 leading-relaxed">
-            <li>Volume absolu initial inférieur à un référencement agressif en hypermarchés Edeka/Rewe.</li>
-            <li>Dépendance initiale à la maîtrise des coûts d'acquisition paid social (Meta / TikTok Ads).</li>
-            <li>Frais logistiques 3PL plus élevés par canette en direct consommateur (0.45 € vs 0.15 € en palette retail).</li>
+            <li>Lower initial absolute volume compared to aggressive hypermarket distribution (Edeka/Rewe nationwide).</li>
+            <li>Initial dependency on disciplined paid performance marketing execution (Meta / TikTok / Search Ads).</li>
+            <li>Higher 3PL packaging and delivery fee per unit for direct-to-consumer delivery (€0.45 vs €0.15 on pallet retail).</li>
           </ul>
         </div>
 
         <div className="p-4 bg-white border border-slate-200 rounded-xl shadow-xs space-y-2">
           <h4 className="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
             <ShieldCheck className="w-4 h-4 text-emerald-700" />
-            <span>Conditions de Bascule (Reverse Conditions)</span>
+            <span>Reverse Conditions & Pivot Thresholds</span>
           </h4>
           <ul className="text-2xs text-slate-600 space-y-1.5 list-disc pl-4 leading-relaxed">
-            <li>Si le CAC effectif à Berlin dépasse 38 € par commande initiale, basculer le budget vers le sampling direct en espace coworking.</li>
-            <li>Si le taux de réachat à 60 jours est inférieur à 20%, ajuster le pricing pack ou lancer un abonnement mensuel avec 10% de remise.</li>
-            <li>Si le volume mensuel dépasse 20 000 canettes en M6, engager les négociations de référencement sélectif (Alnatura / Denn's Bio).</li>
+            <li>If blended CAC in urban hubs exceeds €38 per initial order, reallocate ad spend toward localized direct office sampling.</li>
+            <li>If 60-day repeat purchase rate drops below 20%, adjust multipack tier discounts or launch a monthly subscriber bundle with 10% saving.</li>
+            <li>If monthly run-rate exceeds 20,000 cans by Month 6, initiate selective organic grocery discussions (Alnatura / Denn&apos;s Biomarkt).</li>
           </ul>
         </div>
       </div>
@@ -184,10 +183,10 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
           <FileSignature className="w-5 h-5 text-emerald-700" />
           <div>
             <h3 className="text-sm font-bold text-slate-900">
-              Engagement & Signature Managériale
+              Executive Sign-off & Decision Endorsement
             </h3>
             <p className="text-3xs text-slate-500">
-              Conformément à la gouvernance, une décision stratégique requiert un arbitrage humain explicite.
+              In accordance with corporate governance standards, strategic execution requires explicit managerial authorization.
             </p>
           </div>
         </div>
@@ -196,13 +195,13 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
           <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
             <div className="flex items-center gap-2 text-emerald-900 font-bold text-xs">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              <span>Dossier Stratégique Formellement Validé & Signé</span>
+              <span>Strategic Dossier Formally Endorsed & Executed</span>
             </div>
             <div className="text-2xs text-emerald-800 space-y-1">
-              <div>Signataire : <strong>{signerName}</strong> ({signerRole})</div>
-              <div>Statut décisionnel : <strong>{decisionStatus}</strong></div>
-              <div>Horodatage officiel : <strong>{signedDate}</strong></div>
-              <div className="italic pt-1">« {decisionRationale} »</div>
+              <div>Signatory: <strong>{signerName}</strong> ({signerRole})</div>
+              <div>Decision Verdict: <strong>{decisionStatus}</strong></div>
+              <div>Official Timestamp: <strong>{signedDate}</strong></div>
+              <div className="italic pt-1">&ldquo;{decisionRationale}&rdquo;</div>
             </div>
           </div>
         ) : (
@@ -210,7 +209,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-2xs font-semibold text-slate-700 mb-1">
-                  Nom des décideurs
+                  Signatory Names
                 </label>
                 <input
                   type="text"
@@ -223,7 +222,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
 
               <div>
                 <label className="block text-2xs font-semibold text-slate-700 mb-1">
-                  Rôle ou Instance de validation
+                  Role / Governance Body
                 </label>
                 <input
                   type="text"
@@ -237,7 +236,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
 
             <div>
               <label className="block text-2xs font-semibold text-slate-700 mb-1">
-                Avis formel
+                Formal Verdict
               </label>
               <div className="flex gap-4 text-xs">
                 <label className="flex items-center gap-1.5 cursor-pointer">
@@ -248,7 +247,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                     onChange={() => setDecisionStatus('APPROVED')}
                     className="text-emerald-700 focus:ring-emerald-600"
                   />
-                  <span className="font-semibold text-emerald-800">Option Validée</span>
+                  <span className="font-semibold text-emerald-800">Option Endorsed</span>
                 </label>
                 <label className="flex items-center gap-1.5 cursor-pointer">
                   <input
@@ -258,14 +257,14 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                     onChange={() => setDecisionStatus('CONDITIONAL')}
                     className="text-amber-700 focus:ring-amber-600"
                   />
-                  <span className="font-semibold text-amber-800">Sous réserve de test</span>
+                  <span className="font-semibold text-amber-800">Subject to Pilot Testing</span>
                 </label>
               </div>
             </div>
 
             <div>
               <label className="block text-2xs font-semibold text-slate-700 mb-1">
-                Justification & Rationale Stratégique
+                Executive Rationale & Strategic Defense
               </label>
               <textarea
                 rows={3}
@@ -281,7 +280,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 type="submit"
                 className="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-bold text-xs shadow-xs transition-colors"
               >
-                Signer et Enregistrer la Décision
+                Sign and Record Decision
               </button>
             </div>
           </form>

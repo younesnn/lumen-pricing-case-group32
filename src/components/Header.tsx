@@ -36,15 +36,15 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2">
           <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0" />
           <span>
-            <strong>Avertissement méthodologique :</strong> Aucun historique de ventes LUMEN en Allemagne ; résultats de simulation conditionnels sous hypothèses explicites.
+            <strong>Methodological Notice:</strong> Zero observed LUMEN sales in Germany; conditional simulation results based on explicit assumptions.
           </span>
         </div>
         <div className="hidden sm:flex items-center gap-3 text-amber-800/80">
-          <span>Marché cible : <strong>Allemagne (DE)</strong></span>
+          <span>Target Market: <strong>Germany (DE)</strong></span>
           <span>•</span>
-          <span>Lancement : <strong>{activeScenario.launchDate}</strong></span>
+          <span>Launch: <strong>{activeScenario.launchDate}</strong></span>
           <span>•</span>
-          <span>Convention : <strong>TVA 19% + Pfand 0.25€</strong></span>
+          <span>Convention: <strong>VAT 19% + Pfand €0.25</strong></span>
         </div>
       </div>
 
@@ -62,11 +62,11 @@ export const Header: React.FC<HeaderProps> = ({
                   LUMEN Strategy Simulator
                 </h1>
                 <span className="text-2xs font-bold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-300">
-                  MVP DE
+                  DE MVP
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
-                Pricing & Go-to-Market Allemagne • Moteur décisionnel certifié
+                Pricing & Go-to-Market Germany • Certified Decision Engine
               </p>
             </div>
           </div>
@@ -75,7 +75,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Scenario Name & Status */}
           <div className="hidden md:flex items-center gap-2 text-xs">
-            <span className="text-slate-500 font-medium">Scénario actif :</span>
+            <span className="text-slate-500 font-medium">Active Scenario:</span>
             <span className="font-semibold text-slate-900 px-2 py-0.5 bg-slate-100 rounded-md border border-slate-200">
               {activeScenario.name}
             </span>
@@ -85,12 +85,12 @@ export const Header: React.FC<HeaderProps> = ({
             {activeEvaluation.isStale ? (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-2xs font-semibold">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-                Modifié (Obsolète)
+                Modified (Needs recalculation)
               </span>
             ) : (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-2xs font-semibold">
                 <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                Évalué à jour
+                Up to Date
               </span>
             )}
           </div>
@@ -100,7 +100,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2.5">
           {/* Horizon Selection */}
           <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs font-medium">
-            <span className="px-2 text-slate-500 text-2xs hidden sm:inline">Horizon :</span>
+            <span className="px-2 text-slate-500 text-2xs hidden sm:inline">Horizon:</span>
             <button
               onClick={() => onChangeHorizon(3)}
               className={`px-2.5 py-1 rounded-md transition-all ${
@@ -109,7 +109,7 @@ export const Header: React.FC<HeaderProps> = ({
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              3 mois
+              3 mo
             </button>
             <button
               onClick={() => onChangeHorizon(6)}
@@ -119,7 +119,7 @@ export const Header: React.FC<HeaderProps> = ({
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              6 mois
+              6 mo
             </button>
             <button
               onClick={() => onChangeHorizon(12)}
@@ -129,7 +129,7 @@ export const Header: React.FC<HeaderProps> = ({
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              12 mois
+              12 mo
             </button>
           </div>
 
@@ -144,13 +144,13 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <Play className="w-3.5 h-3.5 fill-current" />
-            <span>{isCalculating ? 'Calcul en cours...' : 'Calculer'}</span>
+            <span>{isCalculating ? 'Computing...' : 'Recalculate'}</span>
           </button>
 
           {/* Save Draft */}
           <button
             onClick={onSaveDraft}
-            title="Enregistrer le brouillon"
+            title="Save draft"
             className="p-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition-colors"
           >
             <Save className="w-4 h-4" />
@@ -159,7 +159,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Duplicate */}
           <button
             onClick={onDuplicate}
-            title="Dupliquer l'option"
+            title="Duplicate scenario"
             className="p-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition-colors"
           >
             <Copy className="w-4 h-4" />
@@ -190,7 +190,7 @@ export const Header: React.FC<HeaderProps> = ({
           }`}
         >
           <BarChart2 className="w-3.5 h-3.5" />
-          <span>Scénarios & Options</span>
+          <span>Scenarios & Options</span>
         </button>
 
         <button
@@ -202,7 +202,7 @@ export const Header: React.FC<HeaderProps> = ({
           }`}
         >
           <Database className="w-3.5 h-3.5" />
-          <span>Données & Preuves (12 Exhibits)</span>
+          <span>Data & Evidence (12 Exhibits)</span>
         </button>
 
         <button
@@ -214,7 +214,7 @@ export const Header: React.FC<HeaderProps> = ({
           }`}
         >
           <GitCompare className="w-3.5 h-3.5" />
-          <span>Comparaison (F06–F07)</span>
+          <span>Comparison (F06–F07)</span>
         </button>
 
         <button
@@ -226,7 +226,7 @@ export const Header: React.FC<HeaderProps> = ({
           }`}
         >
           <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          <span>Recommandation & Décision (F08)</span>
+          <span>Recommendation & Decision (F08)</span>
         </button>
       </nav>
     </header>
