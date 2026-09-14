@@ -45,8 +45,8 @@ export function App() {
 
   // Comparison selection
   const [selectedForCompare, setSelectedForCompare] = useState<string[]>([
-    'option-a-dtc-premium',
-    'option-b-retail-mass'
+    'demo-dtc',
+    'demo-retail'
   ]);
 
   // Save to local storage whenever scenarios change

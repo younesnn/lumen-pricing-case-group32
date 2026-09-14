@@ -214,7 +214,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 </label>
                 <input
                   type="text"
-                  value={signerName}
+                  value={signerName ?? ''}
                   onChange={e => setSignerName(e.target.value)}
                   required
                   className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-semibold"
@@ -227,7 +227,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
                 </label>
                 <input
                   type="text"
-                  value={signerRole}
+                  value={signerRole ?? ''}
                   onChange={e => setSignerRole(e.target.value)}
                   required
                   className="w-full px-3 py-1.5 border border-slate-300 rounded-lg text-xs"
@@ -269,7 +269,7 @@ export const DecisionView: React.FC<DecisionViewProps> = ({
               </label>
               <textarea
                 rows={3}
-                value={decisionRationale}
+                value={decisionRationale ?? ''}
                 onChange={e => setDecisionRationale(e.target.value)}
                 required
                 className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs leading-relaxed"

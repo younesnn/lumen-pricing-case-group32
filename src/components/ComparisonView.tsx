@@ -23,7 +23,10 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
 
   // Keep only existing selected scenarios (between 2 and 3)
   const compareScenarios = scenarios.filter(s => selectedIds.includes(s.id));
-  const activeRefScenario = scenarios.find(s => s.id === referenceId) || compareScenarios[0];
+  const currentRefId = compareScenarios.some(s => s.id === referenceId)
+    ? referenceId
+    : (compareScenarios[0]?.id || scenarios[0]?.id || '');
+  const activeRefScenario = scenarios.find(s => s.id === currentRefId) || compareScenarios[0];
   const refEvaluation = evaluations[activeRefScenario?.id];
 
   const getCheckpoint = (evalRes?: EvaluationResult) => {
@@ -106,7 +109,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
           <div className="flex items-center gap-2 text-2xs">
             <span className="text-slate-500">Option de référence (Base) :</span>
             <select
-              value={referenceId}
+              value={currentRefId}
               onChange={e => setReferenceId(e.target.value)}
               className="px-2 py-1 border border-slate-300 rounded bg-white font-semibold text-slate-800"
             >

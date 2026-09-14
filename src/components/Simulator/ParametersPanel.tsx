@@ -86,7 +86,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
               </label>
               <input
                 type="text"
-                value={scenario.name}
+                value={scenario.name ?? ''}
                 onChange={e => updateScenarioField(d => { d.name = e.target.value; })}
                 className="w-full px-2.5 py-1.5 border border-slate-300 rounded-md text-xs focus:ring-1 focus:ring-emerald-600 focus:border-emerald-600"
               />
@@ -107,7 +107,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                 </label>
                 <input
                   type="date"
-                  value={scenario.launchDate}
+                  value={scenario.launchDate ?? ''}
                   onChange={e => updateScenarioField(d => { d.launchDate = e.target.value; })}
                   className="w-full px-2 py-1.5 border border-slate-300 rounded-md text-xs focus:ring-1 focus:ring-emerald-600"
                 />
@@ -120,7 +120,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
               </label>
               <textarea
                 rows={2}
-                value={scenario.description}
+                value={scenario.description ?? ''}
                 onChange={e => updateScenarioField(d => { d.description = e.target.value; })}
                 className="w-full px-2.5 py-1.5 border border-slate-300 rounded-md text-xs focus:ring-1 focus:ring-emerald-600 text-slate-700"
               />
@@ -187,12 +187,15 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                   </div>
                   <div className="flex items-center gap-2">
                     <input
+                      key="commercial-a-level-input"
                       type="number"
                       min={1000}
                       step={500}
-                      value={scenario.commercialA.level.value}
+                      value={scenario.commercialA?.level?.value ?? 0}
                       onChange={e => updateScenarioField(d => {
-                        d.commercialA.level.value = Number(e.target.value) || 0;
+                        if (d.commercialA?.level) {
+                          d.commercialA.level.value = Number(e.target.value) || 0;
+                        }
                       })}
                       className="w-full px-2.5 py-1.5 border border-slate-300 rounded-md text-xs font-semibold text-slate-900"
                     />
@@ -207,7 +210,7 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                       Répartition Mix Canaux
                     </label>
                     <span className="text-3xs text-emerald-700 font-bold">
-                      Somme : {Math.round((Object.values(scenario.commercialA.mix) as Array<{ value: number }>).reduce((a, b) => a + b.value, 0) * 100)}%
+                      Somme : {Math.round((Object.values(scenario.commercialA.mix) as Array<{ value: number }>).reduce((a, b) => a + (b?.value ?? 0), 0) * 100)}%
                     </span>
                   </div>
 
@@ -217,15 +220,16 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                         <span className="text-2xs text-slate-700 font-medium">{chName}</span>
                         <div className="flex items-center gap-1.5">
                           <input
+                            key={`mix-input-${chName}`}
                             type="number"
                             min={0}
                             max={100}
                             step={5}
-                            value={Math.round(chData.value * 100)}
+                            value={chData?.value !== undefined ? Math.round(chData.value * 100) : 0}
                             onChange={e => {
                               const newPct = Number(e.target.value) / 100;
                               updateScenarioField(d => {
-                                if (d.commercialA.mix[chName]) {
+                                if (d.commercialA?.mix?.[chName]) {
                                   d.commercialA.mix[chName].value = Math.max(0, Math.min(1, newPct));
                                 }
                               });
@@ -247,8 +251,34 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                   </label>
                   <div className="flex items-center gap-2">
                     <input
+                      key="commercial-b-organic-input"
                       type="number"
-                      defaultValue={1500}
+                      min={0}
+                      step={250}
+                      value={scenario.commercialB?.organicBaseMonthly?.value ?? 1500}
+                      onChange={e => {
+                        const val = Number(e.target.value) || 0;
+                        updateScenarioField(d => {
+                          if (!d.commercialB) {
+                            d.commercialB = {
+                              organicBaseMonthly: {
+                                value: val,
+                                unit: 'canettes/mois',
+                                kind: 'ASSUMPTION',
+                                source: 'Base organique mensuelle estimée',
+                                accepted: true
+                              },
+                              marketingChannels: {},
+                              channelSalesAllocation: {
+                                'DTC Online': 0.6,
+                                'Retail/Grocery': 0.4
+                              }
+                            };
+                          } else {
+                            d.commercialB.organicBaseMonthly.value = val;
+                          }
+                        });
+                      }}
                       className="w-full px-2.5 py-1.5 border border-slate-300 rounded-md text-xs font-semibold"
                     />
                     <span className="text-2xs text-slate-500 shrink-0">canettes/mois</span>
@@ -295,9 +325,11 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                         type="number"
                         step={0.10}
                         min={0.5}
-                        value={terms.price.value}
+                        value={terms.price?.value ?? 0}
                         onChange={e => updateScenarioField(d => {
-                          d.economics.channels[chName].price.value = Number(e.target.value) || 0;
+                          if (d.economics.channels[chName]?.price) {
+                            d.economics.channels[chName].price.value = Number(e.target.value) || 0;
+                          }
                         })}
                         className="w-full px-2 py-1 border border-slate-300 rounded font-semibold text-xs text-slate-900"
                       />
@@ -314,9 +346,11 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                         type="number"
                         step={0.01}
                         min={0.1}
-                        value={terms.cogs.value}
+                        value={terms.cogs?.value ?? 0}
                         onChange={e => updateScenarioField(d => {
-                          d.economics.channels[chName].cogs.value = Number(e.target.value) || 0;
+                          if (d.economics.channels[chName]?.cogs) {
+                            d.economics.channels[chName].cogs.value = Number(e.target.value) || 0;
+                          }
                         })}
                         className="w-full px-2 py-1 border border-slate-300 rounded font-semibold text-xs text-slate-900"
                       />
@@ -331,9 +365,11 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                     <input
                       type="number"
                       step={1}
-                      value={Math.round(terms.retailerCut.value * 100)}
+                      value={terms.retailerCut?.value !== undefined ? Math.round(terms.retailerCut.value * 100) : 0}
                       onChange={e => updateScenarioField(d => {
-                        d.economics.channels[chName].retailerCut.value = (Number(e.target.value) || 0) / 100;
+                        if (d.economics.channels[chName]?.retailerCut) {
+                          d.economics.channels[chName].retailerCut.value = (Number(e.target.value) || 0) / 100;
+                        }
                       })}
                       className="w-full px-1.5 py-0.5 border border-slate-300 rounded text-center text-2xs font-semibold"
                     />
@@ -345,9 +381,11 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                     <input
                       type="number"
                       step={0.05}
-                      value={terms.fulfillment.value}
+                      value={terms.fulfillment?.value ?? 0}
                       onChange={e => updateScenarioField(d => {
-                        d.economics.channels[chName].fulfillment.value = Number(e.target.value) || 0;
+                        if (d.economics.channels[chName]?.fulfillment) {
+                          d.economics.channels[chName].fulfillment.value = Number(e.target.value) || 0;
+                        }
                       })}
                       className="w-full px-1.5 py-0.5 border border-slate-300 rounded text-center text-2xs font-semibold"
                     />
@@ -359,9 +397,11 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                     <input
                       type="number"
                       step={0.1}
-                      value={(terms.paymentFee.value * 100).toFixed(1)}
+                      value={terms.paymentFee?.value !== undefined ? (terms.paymentFee.value * 100).toFixed(1) : '0'}
                       onChange={e => updateScenarioField(d => {
-                        d.economics.channels[chName].paymentFee.value = (Number(e.target.value) || 0) / 100;
+                        if (d.economics.channels[chName]?.paymentFee) {
+                          d.economics.channels[chName].paymentFee.value = (Number(e.target.value) || 0) / 100;
+                        }
                       })}
                       className="w-full px-1.5 py-0.5 border border-slate-300 rounded text-center text-2xs font-semibold"
                     />
@@ -426,9 +466,11 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                 <input
                   type="number"
                   step={500}
-                  value={scenario.economics.fixedCostsMonthly.value}
+                  value={scenario.economics.fixedCostsMonthly?.value ?? 0}
                   onChange={e => updateScenarioField(d => {
-                    d.economics.fixedCostsMonthly.value = Number(e.target.value) || 0;
+                    if (d.economics.fixedCostsMonthly) {
+                      d.economics.fixedCostsMonthly.value = Number(e.target.value) || 0;
+                    }
                   })}
                   className="w-full px-2 py-1 border border-slate-300 rounded text-xs font-semibold text-slate-900"
                 />
@@ -453,9 +495,11 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                 <input
                   type="number"
                   step={2000}
-                  value={scenario.economics.prelaunchInvestment.value}
+                  value={scenario.economics.prelaunchInvestment?.value ?? 0}
                   onChange={e => updateScenarioField(d => {
-                    d.economics.prelaunchInvestment.value = Number(e.target.value) || 0;
+                    if (d.economics.prelaunchInvestment) {
+                      d.economics.prelaunchInvestment.value = Number(e.target.value) || 0;
+                    }
                   })}
                   className="w-full px-2 py-1 border border-slate-300 rounded text-xs font-semibold text-slate-900"
                 />
@@ -498,11 +542,13 @@ export const ParametersPanel: React.FC<ParametersPanelProps> = ({
                       <input
                         type="number"
                         step={500}
-                        value={budgetArr[0]}
+                        value={budgetArr?.[0] ?? 0}
                         onChange={e => {
                           const val = Number(e.target.value) || 0;
                           updateScenarioField(d => {
-                            d.marketingBudgets[channel][0] = val;
+                            if (d.marketingBudgets[channel]) {
+                              d.marketingBudgets[channel][0] = val;
+                            }
                           });
                         }}
                         className="w-20 px-1.5 py-0.5 border border-slate-300 rounded text-center text-xs font-semibold"

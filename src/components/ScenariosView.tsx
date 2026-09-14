@@ -219,7 +219,7 @@ export const ScenariosView: React.FC<ScenariosViewProps> = ({
                   type="text"
                   required
                   placeholder="Ex : Option D : Hybride Bio & Fitness"
-                  value={newName}
+                  value={newName ?? ''}
                   onChange={e => setNewName(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-600"
                 />
@@ -232,7 +232,7 @@ export const ScenariosView: React.FC<ScenariosViewProps> = ({
                 <textarea
                   rows={3}
                   placeholder="Expliquez la logique de ciblage, le mix canal envisagé..."
-                  value={newDesc}
+                  value={newDesc ?? ''}
                   onChange={e => setNewDesc(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-600"
                 />
