@@ -13,7 +13,7 @@ import { EvidenceView } from './components/EvidenceView';
 import { ComparisonView } from './components/ComparisonView';
 import { DecisionView } from './components/DecisionView';
 import { DEFAULT_SCENARIOS } from './data/defaultScenarios';
-import { Scenario, EvaluationResult, ValueKind } from './types/simulator';
+import { Scenario, EvaluationResult, ValueKind, ChannelTerms } from './types/simulator';
 import { evaluateScenario } from './engine/calculator';
 import { TrendingUp, DollarSign, Sliders, BookOpen, AlertTriangle, ArrowRight, Lightbulb, Compass, FileCheck } from 'lucide-react';
 
@@ -168,7 +168,9 @@ export function App() {
   };
 
   // Executive summary values
-  const ck = horizon === 3 ? activeEvaluation.checkpoints.m3 : horizon === 6 ? activeEvaluation.checkpoints.m6 : activeEvaluation.checkpoints.m12;
+  const ck = horizon === 3 ? activeEvaluation?.checkpoints?.m3 : horizon === 6 ? activeEvaluation?.checkpoints?.m6 : activeEvaluation?.checkpoints?.m12;
+  const channelsList = Object.values(activeScenario.economics?.channels || {}) as ChannelTerms[];
+  const primaryShelfPrice = channelsList[0]?.price?.value ?? 2.49;
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans selection:bg-emerald-100 selection:text-emerald-900">
@@ -237,7 +239,7 @@ export function App() {
                       </span>
                     </h3>
                     <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                      At a consumer shelf price of <strong>€{activeScenario.pricing.consumerPriceGross.toFixed(2)}</strong>, LUMEN generates{' '}
+                      At a consumer shelf price of <strong>€{primaryShelfPrice.toFixed(2)}</strong>, LUMEN generates{' '}
                       <strong>€{Math.round(ck.netRevenue).toLocaleString('en-US')}</strong> net recognized revenue from{' '}
                       <strong>{ck.volumeTotal.toLocaleString('en-US')} cans</strong>. Gross margin capture is{' '}
                       <strong>{(ck.grossMarginRate * 100).toFixed(1)}%</strong>, delivering a net operating contribution of{' '}
@@ -430,6 +432,8 @@ export function App() {
         activeEvaluation={activeEvaluation}
         horizon={horizon}
         onCalculate={handleCalculate}
+        isOpen={isHelpOpen}
+        onToggleOpen={setIsHelpOpen}
       />
     </div>
   );

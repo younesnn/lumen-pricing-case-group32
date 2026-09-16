@@ -28,6 +28,8 @@ interface LiveHelpGuideProps {
   activeEvaluation: EvaluationResult;
   horizon: 3 | 6 | 12;
   onCalculate: () => void;
+  isOpen?: boolean;
+  onToggleOpen?: (open: boolean) => void;
 }
 
 export const LiveHelpGuide: React.FC<LiveHelpGuideProps> = ({
@@ -39,12 +41,19 @@ export const LiveHelpGuide: React.FC<LiveHelpGuideProps> = ({
   activeEvaluation,
   horizon,
   onCalculate,
+  isOpen: controlledIsOpen,
+  onToggleOpen,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
+  const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
+  const setIsOpen = (val: boolean) => {
+    if (onToggleOpen) onToggleOpen(val);
+    setInternalIsOpen(val);
+  };
   const [activeGuideTab, setActiveGuideTab] = useState<'steps' | 'current' | 'diagnostics' | 'glossary'>('current');
   const [glossaryQuery, setGlossaryQuery] = useState('');
 
-  const ck = horizon === 3 ? activeEvaluation.checkpoints.m3 : horizon === 6 ? activeEvaluation.checkpoints.m6 : activeEvaluation.checkpoints.m12;
+  const ck = horizon === 3 ? activeEvaluation?.checkpoints?.m3 : horizon === 6 ? activeEvaluation?.checkpoints?.m6 : activeEvaluation?.checkpoints?.m12;
 
   // Workflow steps definitions
   const workflowSteps = [
