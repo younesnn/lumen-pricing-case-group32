@@ -36,43 +36,86 @@ export const EVIDENCE_CATALOG: EvidenceItem[] = [
   {
     id: 'ex-2',
     exhibitNumber: 2,
-    title: 'Competitor Pricing by Channel & Pack Format',
+    title: 'Competitor Pricing by Channel & Pack Format (DE)',
     filename: 'competitor_prices_by_channel.csv',
     category: 'Pricing & Competition',
     status: 'DATA_AVAILABLE',
-    provenance: 'Retail shelf audits & web scraping Q2 2026 (Germany)',
+    provenance: 'Retail shelf audits & web scraping Q2 2026 across Berlin, Munich, Hamburg, Cologne',
     keyInsights: [
-      'Direct competitors observed: CleanEnergy (€2.19), FocusSpark (€2.49), NootroPop (€2.69), BioBoost (€1.99).',
-      'Standard formats: 250ml and 330ml cans.',
-      'In DTC online, brands typically offer 12-packs or 24-packs at an average unit price of €2.30 to €2.60.'
+      'PulsUp (Mass market): €1.07 supermarket shelf price, €1.28 gym, €12.90 for 12-pack DTC subscription.',
+      'Mate Libre (Bio/organic heritage): €1.59 supermarket, €1.83 gym cooler, €19.20 12-pack DTC.',
+      'VoltFit (Direct performance benchmark): €2.37 supermarket, €2.72 gym, €2.49 DTC single trial can, €27.90 12-pack sub.',
+      'Root & Rise (Boutique adaptogen luxury): €2.98 organic supermarket (Alnatura/Denns), €3.30 luxury gym/spa, €34.90 12-pack sub.'
     ],
-    caveats: 'Prices displayed include VAT; deposit (Pfand) handling varies by retailer and listing.',
+    caveats: 'All shelf prices include 19% VAT and standard €0.25 DPG Pfand deposit.',
     metricsSample: {
-      'Retail Range': '€1.99 – €2.69',
-      'Median Organic Channel Price': '€2.49',
-      'DTC 12-Pack Price': '€28.90 (€2.40/can)',
-      'Max Price Spread': '€0.70'
+      'PulsUp (Discounter)': '€1.07',
+      'Mate Libre (Bio)': '€1.59',
+      'VoltFit (Direct)': '€2.37 – €2.49',
+      'Root & Rise (Luxury)': '€2.98 – €3.11'
+    }
+  },
+  {
+    id: 'ex-3',
+    exhibitNumber: 3,
+    title: '12-Month Competitor Price & Promotional Discount History',
+    filename: 'competitor_price_history.csv',
+    category: 'Pricing & Competition',
+    status: 'DATA_AVAILABLE',
+    provenance: 'German retail scanner tracking across 12 consecutive months',
+    keyInsights: [
+      'VoltFit executes tactical ~12.7% promotional discounts in April (€2.07) and July (€2.07), plus an 8.9% discount in November (€2.16).',
+      'PulsUp relies heavily on deep seasonal discounts: -18.7% in February and August (down to €0.87) to block new entrants.',
+      'Mate Libre runs mild 10% discounts in March and June (€1.43); Root & Rise never discounts (0% promo rate across all 12 months).'
+    ],
+    caveats: 'Promotions require co-funding agreements with German supermarket buyers (e.g. Rewe, Edeka).',
+    metricsSample: {
+      'VoltFit Promo Depth': '12.7% (to €2.07)',
+      'PulsUp Promo Depth': '18.7% (to €0.87)',
+      'Mate Libre Promo Depth': '10.0% (to €1.43)',
+      'Root & Rise Promo Depth': '0.0% (always €2.98)'
     }
   },
   {
     id: 'ex-4',
     exhibitNumber: 4,
-    title: 'German Consumer Survey (N=420 respondents)',
+    title: 'German Consumer Survey (N=422 respondents)',
     filename: 'customer_survey.csv',
     category: 'Consumers & Surveys',
     status: 'QUALIFIED_ANALYSIS',
-    provenance: 'Representative urban German online survey panel',
+    provenance: 'Representative urban German consumer panel across Berlin, Munich, Hamburg, and Cologne',
     keyInsights: [
-      'Stated purchase intent: 64% for the "Focus without caffeine crash" benefit profile.',
-      'Preferred purchase channel: 52% Supermarkets (Rewe/Edeka), 26% Organic/Specialty, 22% DTC Web.',
-      'Importance of product claims: 78% demand no refined sugar and recyclable Pfand deposit return.'
+      'Unaided brand awareness: PulsUp (77.5%), VoltFit (53.8%), Mate Libre (41.7%), Root & Rise (18.9%).',
+      'Average stated willingness-to-pay for clean non-crash functional caffeine is €2.34.',
+      '52% prefer buying functional beverages in supermarkets (Rewe/Edeka), 26% organic grocers, 22% DTC subscription.'
     ],
-    caveats: 'Stated purchase intent bias vs actual checkout; real conversion is typically 3-5x lower than surveyed intent.',
+    caveats: 'Survey-stated purchase intent is subject to hypothetical bias; real in-store checkout conversion is lower.',
     metricsSample: {
-      'Sample Size': '420 respondents',
-      'Favorable Intent': '64.2%',
-      'Supermarket Preference': '52.1%',
-      'Organic Ingredient Sensitivity': '71.5%'
+      'Sample Size': '422 respondents',
+      'Mean Willingness to Pay': '€2.34',
+      'VoltFit Awareness': '53.8%',
+      'PulsUp Awareness': '77.5%'
+    }
+  },
+  {
+    id: 'ex-5',
+    exhibitNumber: 5,
+    title: 'Qualitative Consumer Verbatims & Competitor Perception',
+    filename: 'customer_quotes.csv',
+    category: 'Consumers & Surveys',
+    status: 'QUALIFIED_ANALYSIS',
+    provenance: 'In-depth focus group and intercept interviews in Berlin & Munich',
+    keyInsights: [
+      'Fitness segment: "If it performs like VoltFit but tastes better I\'m switching immediately."',
+      'Urban wellness professionals: "I switched my afternoon coffee run to this, I don\'t mind paying more for clean ingredients."',
+      'Budget barrier: Students reject €2.50 price point regardless of ingredients, remaining loyal to PulsUp (€1.07).'
+    ],
+    caveats: 'Qualitative sentiment reflects early-adopter urban psychographics, not broad price-elastic rural segments.',
+    metricsSample: {
+      'Target Benchmark': 'VoltFit replacement',
+      'Key Barrier': 'Medicinal taste perception',
+      'Premium Catalyst': 'Clean afternoon coffee alternative',
+      'Price Floor Sentiment': 'Student budget resistance > €2.00'
     }
   },
   {

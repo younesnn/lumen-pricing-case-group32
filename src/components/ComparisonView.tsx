@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Scenario, EvaluationResult } from '../types/simulator';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Scale, ShieldCheck } from 'lucide-react';
+import { CompetitorBenchmarkView } from './CompetitorBenchmarkView';
 
 interface ComparisonViewProps {
   scenarios: Scenario[];
@@ -9,14 +10,17 @@ interface ComparisonViewProps {
   selectedIds: string[];
   onToggleCompare: (id: string) => void;
   onSelectActiveScenario: (id: string) => void;
+  activeScenario?: Scenario;
 }
 
 export const ComparisonView: React.FC<ComparisonViewProps> = ({
   scenarios,
   evaluations,
   selectedIds,
-  onToggleCompare
+  onToggleCompare,
+  activeScenario
 }) => {
+  const [comparisonMode, setComparisonMode] = useState<'scenarios' | 'competitors'>('scenarios');
   const [horizon, setHorizon] = useState<3 | 6 | 12>(12);
   const [referenceId, setReferenceId] = useState<string>(selectedIds[0] || scenarios[0]?.id || '');
 
@@ -49,35 +53,80 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-      {/* Header & Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900">Multi-Option Comparative Analysis (F06–F07)</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Benchmark 2 or 3 strategies to assess tradeoffs across sales volume, margin capture, and marketing intensity.
-          </p>
+      {/* Top Mode Navigation Switcher */}
+      <div className="flex flex-wrap items-center justify-between gap-4 p-1.5 bg-slate-200/80 rounded-2xl border border-slate-300/60 shadow-xs">
+        <div className="flex items-center gap-1.5 w-full sm:w-auto">
+          <button
+            onClick={() => setComparisonMode('scenarios')}
+            className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 ${
+              comparisonMode === 'scenarios'
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Scale className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Internal Strategy Tradeoffs (F06–F07)</span>
+            <span className="px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-3xs font-mono">
+              {compareScenarios.length} compared
+            </span>
+          </button>
+
+          <button
+            onClick={() => setComparisonMode('competitors')}
+            className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 ${
+              comparisonMode === 'competitors'
+                ? 'bg-emerald-700 text-white shadow-sm'
+                : 'text-slate-700 hover:text-slate-900'
+            }`}
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-300" />
+            <span>German Competitor Benchmark (Exhibits 2–5)</span>
+            <span className={`px-2 py-0.5 rounded-full text-3xs font-bold uppercase tracking-wider ${
+              comparisonMode === 'competitors' ? 'bg-emerald-800 text-emerald-100' : 'bg-emerald-100 text-emerald-800'
+            }`}>
+              VoltFit & Incumbents
+            </span>
+          </button>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Horizon Selector */}
-          <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs font-medium">
-            <span className="px-2 text-slate-500 text-2xs">Horizon:</span>
-            {[3, 6, 12].map(h => (
-              <button
-                key={h}
-                onClick={() => setHorizon(h as 3 | 6 | 12)}
-                className={`px-2.5 py-1 rounded-md transition-all ${
-                  horizon === h
-                    ? 'bg-emerald-700 text-white font-semibold shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                {h}m
-              </button>
-            ))}
-          </div>
-        </div>
+        <span className="text-3xs text-slate-500 font-mono hidden md:inline-block px-3">
+          {comparisonMode === 'scenarios' ? 'Scenario Sensitivity Matrix' : 'German Functional Market Audit'}
+        </span>
       </div>
+
+      {comparisonMode === 'competitors' ? (
+        <CompetitorBenchmarkView activeScenario={activeRefScenario || activeScenario || scenarios[0]} />
+      ) : (
+        <>
+          {/* Header & Controls */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Multi-Option Comparative Analysis (F06–F07)</h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Benchmark 2 or 3 strategies to assess tradeoffs across sales volume, margin capture, and marketing intensity.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {/* Horizon Selector */}
+              <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs font-medium">
+                <span className="px-2 text-slate-500 text-2xs">Horizon:</span>
+                {[3, 6, 12].map(h => (
+                  <button
+                    key={h}
+                    onClick={() => setHorizon(h as 3 | 6 | 12)}
+                    className={`px-2.5 py-1 rounded-md transition-all ${
+                      horizon === h
+                        ? 'bg-emerald-700 text-white font-semibold shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {h}m
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
 
       {/* Scenario Selector Checkbox Bar */}
       <div className="bg-white p-3.5 border border-slate-200 rounded-xl shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
@@ -361,6 +410,8 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
               </ResponsiveContainer>
             </div>
           </div>
+        </>
+      )}
         </>
       )}
     </div>

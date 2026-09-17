@@ -391,7 +391,7 @@ export function App() {
         )}
 
         {currentTab === 'evidence' && (
-          <EvidenceView />
+          <EvidenceView activeScenario={activeScenario} />
         )}
 
         {currentTab === 'comparison' && (
@@ -404,6 +404,7 @@ export function App() {
               setActiveScenarioId(id);
               setCurrentTab('simulator');
             }}
+            activeScenario={activeScenario}
           />
         )}
 
